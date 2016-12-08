@@ -1,0 +1,16 @@
+{
+  "name": "navigation-module",
+  "title": "Navigation",
+  "username": "Mewgan",
+  "remote": "https://github.com/Mewgan/navigation-module",
+  "download-url": "https://github.com/Mewgan/navigation-module/archive/master.zip",
+  "description": "Navigation module",
+  "author": "S.Sumugan",
+  "version": "0.1",
+
+  "models": [
+    "Jet\\Modules\\Navigation\\Models\\Navigation",
+    "Jet\\Modules\\Navigation\\Models\\NavigationItem"
+  ]
+
+}
