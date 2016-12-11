@@ -13,12 +13,11 @@ class LoadNavigationModule extends AbstractFixture implements OrderedFixtureInte
     private $data = [
         'module_simple_menu' => [
             'name' => 'Menu simple',
-            'callback' => 'Jet\Modules\Navigation\FrontPostController@show',
+            'callback' => 'Jet\Modules\Navigation\Controllers\FrontNavigationController@show',
             'description' => 'Affiche un menu simple',
             'category' => 'navigation',
             'access_level' => 2,
             'templates' => [
-               
             ]
         ],
     ];

@@ -1,11 +1,11 @@
 <?php
 
-namespace Jet\Modules\Navigation;
+namespace Jet\Modules\Controllers\Navigation;
 
 
-use JetFire\Framework\System\Controller;
+use Jet\AdminBlock\Controllers\AdminController;
 
-class AdminNavigationController extends Controller
+class AdminNavigationController extends AdminController
 {
     
     public function create(){

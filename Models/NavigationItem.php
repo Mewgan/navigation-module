@@ -9,9 +9,9 @@ use JetFire\Db\Model;
  * Class NavigationItem
  * @package Jet\Models
  * @Entity
- * @Table(name="navigations_items")
+ * @Table(name="navigation_items")
  */
-class NavigationItem extends Model
+class NavigationItem extends Model implements \JsonSerializable
 {
 
     /**
@@ -25,17 +25,17 @@ class NavigationItem extends Model
      */
     protected $title;
     /**
-     * @ManyToOne(targetEntity="Navigation", inversedBy="items", onDelete="CASCADE")
-     * @JoinColumn(name="navigation_id", referencedColumnName="id")
+     * @ManyToOne(targetEntity="Navigation", inversedBy="items")
+     * @JoinColumn(name="navigation_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $navigation;
     /**
-     * @OneToMany(targetEntity="Navigation", mappedBy="parent", onDelete="SET NULL")
+     * @OneToMany(targetEntity="Navigation", mappedBy="parent")
      */
     protected $childrens;
     /**
-     * @ManyToOne(targetEntity="Navigation", inversedBy="childrens", cascade={"persist", "remove"})
-     * @JoinColumn(name="parent_id", referencedColumnName="id")
+     * @ManyToOne(targetEntity="Navigation", inversedBy="childrens")
+     * @JoinColumn(name="parent_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      */
     protected $parent;
     /**
@@ -43,9 +43,9 @@ class NavigationItem extends Model
      */
     protected $route;
     /**
-     * @Column(type="array", nullable=true)
+     * @Column(type="integer")
      */
-    protected $options;
+    protected $position = 0;
 
     /**
      * Navigation Item constructor.
@@ -54,5 +54,135 @@ class NavigationItem extends Model
         $this->childrens = new ArrayCollection();
     }
 
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param mixed $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * @return Navigation
+     */
+    public function getNavigation()
+    {
+        return $this->navigation;
+    }
+
+    /**
+     * @param Navigation $navigation
+     */
+    public function setNavigation(Navigation $navigation)
+    {
+        $this->navigation = $navigation;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getChildrens()
+    {
+        return $this->childrens;
+    }
+
+    /**
+     * @param mixed $childrens
+     */
+    public function setChildrens($childrens)
+    {
+        $this->childrens = $childrens;
+    }
+
+    /**
+     * @return NavigationItem
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param NavigationItem $parent
+     */
+    public function setParent(NavigationItem $parent)
+    {
+        $this->parent = $parent;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRoute()
+    {
+        return $this->route;
+    }
+
+    /**
+     * @param mixed $route
+     */
+    public function setRoute($route)
+    {
+        $this->route = $route;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+    /**
+     * @param mixed $position
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId(),
+            'title' => $this->getTitle(),
+            'route' => $this->getRoute(),
+            'position' => $this->getPosition(),
+            'childrens' => $this->getChildrens(),
+            'parent' => $this->getParent(),
+            'navigation' => $this->getNavigation()
+        ];
+    }
 }

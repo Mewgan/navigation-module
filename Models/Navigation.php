@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping;
  * @Table(name="navigations")
  * @HasLifecycleCallbacks
  */
-class Navigation extends Model
+class Navigation extends Model implements \JsonSerializable
 {
     /**
      * @Id
@@ -115,6 +115,38 @@ class Navigation extends Model
     }
 
     /**
+     * @return mixed
+     */
+    public function getItems()
+    {
+        return $this->items;
+    }
+
+    /**
+     * @param mixed $items
+     */
+    public function setItems($items)
+    {
+        $this->items = $items;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getWebsite()
+    {
+        return $this->website;
+    }
+
+    /**
+     * @param mixed $website
+     */
+    public function setWebsite($website)
+    {
+        $this->website = $website;
+    }
+
+    /**
      * @PrePersist
      */
     public function onPrePersist(){
@@ -128,4 +160,25 @@ class Navigation extends Model
         $this->setUpdatedAt(new \DateTime('now'));
     }
 
+    /**
+     * Specify data which should be serialized to JSON
+     * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'items' => $this->getItems(),
+            'website' => [
+                'id' => $this->getWebsite()->getId(),
+                'domain' => $this->getWebsite()->getDomain(),
+            ],
+            'created_at' => $this->getCreatedAt(),
+            'updated_at' => $this->getUpdatedAt()
+        ];
+    }
 }

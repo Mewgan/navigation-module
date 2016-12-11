@@ -16,15 +16,18 @@ class LoadNavigationTemplate extends AbstractFixture implements OrderedFixtureIn
     public function load(ObjectManager $manager)
     {
         foreach($this->data as $key => $data){
-            $template = new Template();
+            $template = (Template::where('name',$data['name'])->count() == 0)
+                ? new Template()
+                : Template::findOneByName($data['name']);
             $template->setName($data['name']);
             $template->setTitle($data['title']);
             $template->setContent($data['content']);
             $template->setCategory($data['category']);
             $template->setScope($data['scope']);
             $template->setType($data['type']);
-            $manager->persist($template);
             $this->addReference($key, $template);
+            $manager->persist($template);
+
         }
         $manager->flush();
     }

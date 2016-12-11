@@ -21,20 +21,22 @@ class LoadNavigationModuleCategory extends AbstractFixture implements OrderedFix
 
     public function load(ObjectManager $manager)
     {
-        if(ModuleCategory::where('name',$this->data['name'])->where('author',$this->data['author'])->count() == 0) {
-            $cat = new ModuleCategory();
-            $cat->setName($this->data['name']);
-            $cat->setTitle($this->data['title']);
-            $cat->setSlug($this->data['slug']);
-            $cat->setIcon($this->data['icon']);
-            $cat->setAuthor($this->data['author']);
-            $cat->setDescription($this->data['description']);
-            $manager->persist($cat);
-            $this->addReference($this->data['slug'], $cat);
-            $manager->flush();
-        }else{
-            ModuleCategory::where('name',$this->data['name'])->set($this->data);
-        }
+        $cat = (ModuleCategory::where('name',$this->data['name'])->count() == 0)
+            ? new ModuleCategory()
+            : ModuleCategory::findOneByName($this->data['name']);
+        $cat->setName($this->data['name']);
+        $cat->setTitle($this->data['title']);
+        $cat->setSlug($this->data['slug']);
+        $cat->setNav($this->data['nav']);
+        $cat->setIcon($this->data['icon']);
+        $cat->setAuthor($this->data['author']);
+        $cat->setVersion($this->data['version']);
+        $cat->setUpdateAvailable($this->data['update_available']);
+        $cat->setAccessLevel($this->data['access_level']);
+        $cat->setDescription($this->data['description']);
+        $manager->persist($cat);
+        $this->addReference($this->data['slug'], $cat);
+        $manager->flush();
     }
 
 
