@@ -14,9 +14,12 @@ class LoadNavigationModuleCategory extends AbstractFixture implements OrderedFix
         'title' => 'Menu',
         'slug' => 'navigation',
         'description' => 'Module pour le menu',
-        'icon' => 'fa fa-bars fa-4x',
+        'icon' => 'fa fa-bars',
+        'nav' => true,
         'author' => 'S.Sumugan',
-        'version' => '0.1'
+        'version' => '0.1',
+        'update_available' => false,
+        'access_level' => 4
     ];
 
     public function load(ObjectManager $manager)

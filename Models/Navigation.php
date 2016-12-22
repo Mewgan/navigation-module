@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping;
 /**
  * Class Navigation
  * @package Jet\Models
- * @Entity
+ * @Entity(repositoryClass="Jet\Modules\Navigation\Models\NavigationRepository")
  * @Table(name="navigations")
  * @HasLifecycleCallbacks
  */

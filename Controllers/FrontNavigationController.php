@@ -1,6 +1,6 @@
 <?php
 
-namespace Jet\Modules\Controllers\Navigation;
+namespace Jet\Modules\Navigation\Controllers;
 
 
 use Jet\FrontBlock\Controllers\MainController;
