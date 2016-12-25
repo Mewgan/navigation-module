@@ -41,7 +41,15 @@ class NavigationItem extends Model implements \JsonSerializable
     /**
      * @Column(type="string")
      */
-    protected $route;
+    protected $url;
+    /**
+     * @Column(type="string")
+     */
+    protected $type = 'custom';
+    /**
+     * @Column(type="integer", nullable=true)
+     */
+    protected $type_id;
     /**
      * @Column(type="integer")
      */
@@ -137,17 +145,49 @@ class NavigationItem extends Model implements \JsonSerializable
     /**
      * @return mixed
      */
-    public function getRoute()
+    public function getUrl()
     {
-        return $this->route;
+        return $this->url;
     }
 
     /**
-     * @param mixed $route
+     * @param mixed $url
      */
-    public function setRoute($route)
+    public function setUrl($url)
     {
-        $this->route = $route;
+        $this->url = $url;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param mixed $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTypeId()
+    {
+        return $this->type_id;
+    }
+
+    /**
+     * @param mixed $type_id
+     */
+    public function setTypeId($type_id)
+    {
+        $this->type_id = $type_id;
     }
 
     /**
@@ -178,7 +218,9 @@ class NavigationItem extends Model implements \JsonSerializable
         return [
             'id' => $this->getId(),
             'title' => $this->getTitle(),
-            'route' => $this->getRoute(),
+            'url' => $this->getUrl(),
+            'type' => $this->getType(),
+            'type_id' => $this->getTypeId(),
             'position' => $this->getPosition(),
             'childrens' => $this->getChildrens(),
             'parent' => $this->getParent(),
