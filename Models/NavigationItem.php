@@ -3,6 +3,7 @@
 namespace Jet\Modules\Navigation\Models;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Jet\Models\Route;
 use JetFire\Db\Model;
 
 /**
@@ -42,6 +43,11 @@ class NavigationItem extends Model implements \JsonSerializable
      * @Column(type="string")
      */
     protected $url;
+    /**
+     * @ManyToOne(targetEntity="Jet\Models\Route")
+     * @JoinColumn(name="route_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
+     */
+    protected $route;
     /**
      * @Column(type="string")
      */
@@ -159,6 +165,22 @@ class NavigationItem extends Model implements \JsonSerializable
     }
 
     /**
+     * @return Route
+     */
+    public function getRoute()
+    {
+        return $this->route;
+    }
+
+    /**
+     * @param Route $route
+     */
+    public function setRoute(Route $route)
+    {
+        $this->route = $route;
+    }
+
+    /**
      * @return mixed
      */
     public function getType()
@@ -219,6 +241,7 @@ class NavigationItem extends Model implements \JsonSerializable
             'id' => $this->getId(),
             'title' => $this->getTitle(),
             'url' => $this->getUrl(),
+            'route' => $this->getRoute(),
             'type' => $this->getType(),
             'type_id' => $this->getTypeId(),
             'position' => $this->getPosition(),

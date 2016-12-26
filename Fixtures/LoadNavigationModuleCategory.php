@@ -19,7 +19,7 @@ class LoadNavigationModuleCategory extends AbstractFixture implements OrderedFix
         'author' => 'S.Sumugan',
         'version' => '0.1',
         'update_available' => false,
-        'access_level' => 4
+        'access_level' => 2
     ];
 
     public function load(ObjectManager $manager)

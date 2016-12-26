@@ -6,6 +6,8 @@ namespace Jet\Modules\Navigation\Controllers;
 use Jet\AdminBlock\Controllers\AdminController;
 use Jet\Models\Website;
 use Jet\Modules\Navigation\Models\Navigation;
+use Jet\Modules\Navigation\Models\NavigationItem;
+use Jet\Modules\Navigation\Requests\NavigationItemRequest;
 use Jet\Modules\Navigation\Requests\NavigationRequest;
 
 class AdminNavigationController extends AdminController
@@ -40,11 +42,14 @@ class AdminNavigationController extends AdminController
         return ['status' => 'error', 'message' => 'Impossible de trouver le menu'];
     }
 
-    public function updateNavigationUrl($page){
-
-    }
-
-    public function createOrUpdate(NavigationRequest $request, $website, $id){
+    /**
+     * @param NavigationRequest $request
+     * @param NavigationItemRequest $item_request
+     * @param $website
+     * @param $id
+     * @return array|bool
+     */
+    public function createOrUpdate(NavigationRequest $request, NavigationItemRequest $item_request, $website, $id){
         if ($request->method() == 'PUT' || $request->method() == 'POST') {
             $response = $request->validate();
             if ($response === true) {
@@ -52,6 +57,7 @@ class AdminNavigationController extends AdminController
                 if (!is_null($navigation)) {
                     $website = Website::findOneById($website);
                     if (is_null($website)) return ['status' => 'error', 'message' => 'Impossible de trouver le site web'];
+
                     $value = $request->values();
 
                     if ($id == 'create') {
@@ -68,19 +74,33 @@ class AdminNavigationController extends AdminController
                         $navigation->setWebsite($website);
                     }
 
+                    $navigation->setName($value['name']);
+                    $response = $this->updateNavigationItems($item_request);
+                    if(is_array($response))return $response;
+
+                    $response = (Navigation::watchAndSave($navigation))
+                        ? ['status' => 'success', 'message' => 'Les champs ont bien été mis à jour', 'resource' => $navigation]
+                        : ['status' => 'error', 'message' => 'Les champs n\'ont pas pu être mis à jour'];
+                    return $response;
                 }
             }
             return $response;
         }
         return ['status' => 'error', 'message' => 'Requête non autorisée'];
     }
-    
-    public function createContent(){
-        
+
+    private function updateNavigationItems(NavigationItemRequest $item_request, Navigation $navigation, $items, $nav_website){
+        foreach ($items as $value){
+            $item = (isset($value['id']) && substr( $value['id'], 0, 6 ) != "create" && $nav_website == $navigation->getWebsite())
+                ? NavigationItem::findOneById($value['id'])
+                : new NavigationItem();
+            $response = $this->updateItem($navigation, $nav_website, $item, $value);
+            if(is_array($response)) return $response;
+        }
+        return true;
     }
 
-    public function updateContent(){
+    private function updateItem(){
 
     }
-    
 }

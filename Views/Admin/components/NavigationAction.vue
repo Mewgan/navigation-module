@@ -17,6 +17,9 @@
     .navigation-action .nestable-list .setup-bar , .dd-list .setup-bar {
         width: 90%;
     }
+    .navigation-action .nav-bar span{
+        text-transform: lowercase;
+    }
 
     .navigation-action .nestable-list .delete-item , .dd-list .delete-item {
         padding: 5px 10px 5px;
@@ -112,8 +115,9 @@
                             <div :id="'menu-accordion-' + index" class="collapse" aria-expanded="false">
                                 <div class="card-body">
                                     <select2 :launch="true" :multiple="false" @updateValue="updateItem"
-                                             :contents="publication_type.values" :id="'item-select-' + index" key="name"
+                                             :contents="publication_type.values" :id="'item-select-' + index" index="title"
                                              label="Lien"></select2>
+                                    <select2 :launch="true" :multiple="false" @updateValue="updateRoute" :contents="routes" :id="'route-select-' + index" index="url" label="Route"></select2>
                                     <div class="form-group">
                                         <input type="text" class="form-control link-label"
                                                :id="'type-link-label-' + index">
@@ -159,20 +163,24 @@
                                                          :data-target="'#item-accordion-' + item.id" aria-expanded="false">
                                                         <header>{{item.title}}</header>
                                                         <div class="tools">
+                                                            <em>{{item.type}}</em>
                                                             <a class="btn btn-icon-toggle"><i
                                                                     class="fa fa-angle-down"></i></a>
                                                         </div>
                                                     </div>
-                                                    <div :id="'item-accordion-' + item.id" class="collapse"
+                                                    <div :id="'item-accordion-' + item.id" class="collapse nav-bar"
                                                          aria-expanded="false">
                                                         <div class="card-body">
                                                             <select2 v-if="item.type != 'custom'" :launch="true" :val="[item.type_id]" :multiple="false" @updateValue="updateUrl"
-                                                                     :contents="publication_types[item.type].values" :id="'url-item-select-' + item.id" key="name"
+                                                                     :contents="publication_types[item.type].values" :id="'url-item-select-' + item.id" index="title"
                                                                      label="Adresse web"></select2>
                                                             <div v-else class="form-group">
                                                                 <input type="text" v-model="item.url" class="form-control" :id="'url-item-' + item.id">
                                                                 <label :for="'url-item-' + item.id">Adresse web</label>
                                                             </div>
+                                                            <select2 v-if="item.type != 'custom'" :launch="true" :multiple="false" :val="[item.route]" @updateValue="updateItemRoute"
+                                                                     :contents="routes" :id="'url-route-select-' + index" index="url"
+                                                                     label="Route"></select2>
                                                             <div class="form-group">
                                                                 <input type="text" v-model="item.title" class="form-control" id="title-item">
                                                                 <label for="title-item">Titre de la navigation</label>
@@ -203,7 +211,7 @@
     import Select2 from '../../../../../Blocks/AdminBlock/Front/components/Helper/Select2.vue'
 
     import {mapActions} from 'vuex'
-    import {website_api} from '../../../../../Blocks/AdminBlock/Front/api'
+    import {website_api, route_api} from '../../../../../Blocks/AdminBlock/Front/api'
     import {navigation_api} from '../api'
 
     export default
@@ -218,7 +226,9 @@
                     items: []
                 },
                 publication_types: [],
-                nav_url: null
+                nav_url: null,
+                routes: [],
+                nav_route: null
             }
         },
         methods: {
@@ -228,27 +238,38 @@
             updateItem(val){
                 this.nav_url = val;
             },
+            updateRoute(val){
+                this.nav_route = val;
+            },
             updateUrl(val, oldVal){
                 let index = this.navigation.items.findIndex((key) => key.type_id == oldVal);
-                if(index >= 0) {
+                if (index >= 0) {
                     this.navigation.items[index]['type_id'] = val;
                     this.navigation.items[index]['url'] = val;
                 }
+            },
+            updateItemRoute(val, oldVal){
+                let index = this.navigation.items.findIndex((key) => key.route == oldVal);
+                if (index >= 0)
+                    this.navigation.items[index]['route'] = val;
             },
             addNavBar(bloc, type){
                 let link = '';
                 let type_id = null;
                 let url = this.nav_url;
-                if(type != 'custom')  type_id = this.nav_url;
-                let item = {
-                    id: 'create-' + this.navigation.items.length,
-                    title: $('#' + bloc + ' .link-label').val(),
-                    url: url,
-                    type: type,
-                    type_id: type_id,
-                    position: this.navigation.items.length
-                };
-                this.navigation.items.push(item);
+                if ($('#' + bloc + ' .link-label').val() != '' && (type == 'custom' || (type != 'custom' && this.nav_route != null && this.nav_url != null))) {
+                    (type != 'custom') ? type_id = this.nav_url : this.nav_route = null;
+                    let item = {
+                        id: 'create-' + this.navigation.items.length,
+                        title: $('#' + bloc + ' .link-label').val(),
+                        url: url,
+                        route: this.nav_route,
+                        type: type,
+                        type_id: type_id,
+                        position: this.navigation.items.length
+                    };
+                    this.navigation.items.push(item);
+                }
             },
             deleteNavBar(index, id){
                 if (id.substring(0, 6) != 'create' && this.navigation.website.id == this.website_id) {
@@ -267,6 +288,10 @@
             this.read({api: website_api.get_publication_types + this.website_id}).then((response) => {
                 if ('publication_types' in response.data)
                     this.publication_types = response.data.publication_types;
+            });
+            this.read({api: route_api.get_website_routes + this.website_id}).then((response) => {
+                if ('resource' in response.data)
+                    this.routes = response.data.resource;
             });
         },
         mounted(){
