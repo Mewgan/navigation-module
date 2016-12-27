@@ -31,11 +31,11 @@ class NavigationItem extends Model implements \JsonSerializable
      */
     protected $navigation;
     /**
-     * @OneToMany(targetEntity="Navigation", mappedBy="parent")
+     * @OneToMany(targetEntity="NavigationItem", mappedBy="parent")
      */
-    protected $childrens;
+    protected $children;
     /**
-     * @ManyToOne(targetEntity="Navigation", inversedBy="childrens")
+     * @ManyToOne(targetEntity="NavigationItem", inversedBy="childrens")
      * @JoinColumn(name="parent_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      */
     protected $parent;
@@ -65,7 +65,7 @@ class NavigationItem extends Model implements \JsonSerializable
      * Navigation Item constructor.
      */
     public function __construct() {
-        $this->childrens = new ArrayCollection();
+        $this->children = new ArrayCollection();
     }
 
     /**
@@ -119,21 +119,21 @@ class NavigationItem extends Model implements \JsonSerializable
     /**
      * @return mixed
      */
-    public function getChildrens()
+    public function getChildren()
     {
-        return $this->childrens;
+        return $this->children;
     }
 
     /**
-     * @param mixed $childrens
+     * @param mixed $children
      */
-    public function setChildrens($childrens)
+    public function setChildren($children)
     {
-        $this->childrens = $childrens;
+        $this->children = $children;
     }
 
     /**
-     * @return NavigationItem
+     * @return mixed
      */
     public function getParent()
     {
@@ -141,9 +141,9 @@ class NavigationItem extends Model implements \JsonSerializable
     }
 
     /**
-     * @param NavigationItem $parent
+     * @param $parent
      */
-    public function setParent(NavigationItem $parent)
+    public function setParent($parent)
     {
         $this->parent = $parent;
     }
@@ -165,7 +165,7 @@ class NavigationItem extends Model implements \JsonSerializable
     }
 
     /**
-     * @return Route
+     * @return mixed
      */
     public function getRoute()
     {
@@ -173,9 +173,9 @@ class NavigationItem extends Model implements \JsonSerializable
     }
 
     /**
-     * @param Route $route
+     * @param $route
      */
-    public function setRoute(Route $route)
+    public function setRoute($route)
     {
         $this->route = $route;
     }
@@ -245,7 +245,7 @@ class NavigationItem extends Model implements \JsonSerializable
             'type' => $this->getType(),
             'type_id' => $this->getTypeId(),
             'position' => $this->getPosition(),
-            'childrens' => $this->getChildrens(),
+            'children' => $this->getChildren(),
             'parent' => $this->getParent(),
             'navigation' => $this->getNavigation()
         ];

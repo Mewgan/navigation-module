@@ -63,7 +63,7 @@
                                             <td>{{navigation.name}}</td>
                                             <td>
                                                 <router-link
-                                                        :to="{name: 'module:post:action', params: {website_id: website_id, navigation_id: navigation.id}}"
+                                                        :to="{name: 'module:navigation:action', params: {website_id: website_id, navigation_id: navigation.id}}"
                                                         class="btn ink-reaction btn-floating-action btn-info">
                                                     <i class="fa fa-pencil"></i>
                                                 </router-link>

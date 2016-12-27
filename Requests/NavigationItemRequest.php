@@ -25,7 +25,8 @@ class NavigationItemRequest extends Request
     public function rules()
     {
         return [
-            'title|type' => 'required',
+            'id|title|type|url|position' => 'required',
+            'route|type_id' => 'optional'
         ];
     }
 
