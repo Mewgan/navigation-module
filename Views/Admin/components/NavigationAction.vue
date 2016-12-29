@@ -7,7 +7,7 @@
         float: left;
     }
 
-    .navigation-action .section-header button {
+    .navigation-action > .section-header > a {
         margin-left: 10px;
     }
 
@@ -15,18 +15,18 @@
         width: 100%;
     }
 
-
-
 </style>
 
 <template>
     <section class="navigation-action">
         <div class="section-header">
             <ol class="breadcrumb">
-                <router-link :to="{name: 'module:navigation', params: {website_id: $route.params.website_id}}">
-                    Menus
-                </router-link>
-                <li class="active">{{ navigation.title }}</li>
+                <li>
+                    <router-link :to="{name: 'module:navigation', params: {website_id: $route.params.website_id}}">
+                        Menus
+                    </router-link>
+                </li>
+                <li class="active">{{ navigation.name }}</li>
             </ol>
             <a @click="updateOrCreate" class="btn ink-reaction btn-raised btn-lg btn-primary pull-right">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Sauvegarder
@@ -192,7 +192,7 @@
             },
             updateOrCreate(){
                 let navs = $('.nestable-list').nestable('serialize');
-                let new_items = this.reorder(navs, this.navigation.items, [])
+                let new_items = this.reorder(navs, this.navigation.items, []);
                 this.update({
                     api: navigation_api.update_or_create + this.website_id + '/' + this.navigation_id,
                     value: {
@@ -200,36 +200,62 @@
                         items: new_items
                     }
                 }).then((response) => {
-                    if ('resource' in response.data) this.navigation = response.data.resource;
+                    if (response.data.status == 'success'){
+                        if(this.navigation_id == 'create')
+                            this.$router.replace({name: 'module:navigation:action', params: {website_id: this.website_id, custom_field_id: response.data.resource_id}});
+                        else
+                            location.reload();
+                    }
                 })
             },
             reorder(navs, items, new_items){
                 navs.forEach((el, key) => {
-                    let index = items.findIndex((i) => i.id == el.id);
-                    let item = items[index];
-                    item.position = key;
-                    new_items[key] = item;
+                    let item = this.getItem(items, el.id);
+                    new_items[key] = {
+                        id: item.id,
+                        title: item.title,
+                        url: item.url,
+                        route: item.route,
+                        type: item.type,
+                        parent: item.parent,
+                        children: [],
+                        type_id: item.type_id,
+                        position: key
+                    };
                     if ('children' in el) {
                         new_items[key]['children'] = this.reorder(el.children, items, new_items[key]['children'])
                     }
                 });
                 return new_items;
+            },
+            getItem(items, id){
+                for(let i = 0; i < items.length; i++){
+                    if('id' in items[i] && items[i]['id'] == id) {
+                        return items[i];
+                    }
+                    else if('children' in items[i] && items[i]['children'].length > 0) {
+                        let found = this.getItem(items[i]['children'], id);
+                        if(found) return found;
+                    }
+                }
             }
         },
         created () {
-            if (this.navigation_id != 'create') {
-                this.read({api: navigation_api.read + this.navigation_id + '/' + this.website_id}).then((response) => {
-                    if ('resource' in response.data)
-                        this.navigation = response.data.resource;
-                })
-            }
             this.read({api: navigation_api.get_types + this.website_id}).then((response) => {
                 if ('publication_types' in response.data)
                     this.publication_types = response.data.publication_types;
-            });
-            this.read({api: route_api.get_website_routes + this.website_id}).then((response) => {
-                if ('resource' in response.data)
-                    this.routes = response.data.resource;
+            }).then(() => {
+                this.read({api: route_api.get_website_routes + this.website_id}).then((response) => {
+                    if ('resource' in response.data)
+                        this.routes = response.data.resource;
+                }).then(() => {
+                    if (this.navigation_id != 'create') {
+                        this.read({api: navigation_api.read + this.navigation_id + '/' + this.website_id}).then((response) => {
+                            if ('resource' in response.data)
+                                this.navigation = response.data.resource;
+                        })
+                    }
+                });
             });
         }
     }

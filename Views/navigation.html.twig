@@ -1,1 +1,12 @@
-<h1>Menu</h1>
+<div class="row">
+    <div class="col-md-12">
+        <div class="container-fluid">
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    {% include "loop.html.twig" with {'items':navigation.items} only %}
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </div>
+</div>

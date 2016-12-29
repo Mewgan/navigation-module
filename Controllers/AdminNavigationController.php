@@ -78,14 +78,21 @@ class AdminNavigationController extends AdminController
         if ($request->method() == 'PUT' || $request->method() == 'POST') {
             $response = $request->validate();
             if ($response === true) {
-                $navigation = ($id == 'create') ? new Navigation() : Navigation::findOneById($id);
-                $nav_website = $navigation->getWebsite();
+
+                $website = Website::findOneById($website);
+                if (is_null($website)) return ['status' => 'error', 'message' => 'Impossible de trouver le site web'];
+
+                if ($id == 'create') {
+                    $navigation = new Navigation();
+                    $nav_website = $website;
+                } else {
+                    $navigation = Navigation::findOneById($id);
+                    $nav_website = $navigation->getWebsite();
+                }
+
                 if (!is_null($navigation)) {
-                    $website = Website::findOneById($website);
-                    if (is_null($website)) return ['status' => 'error', 'message' => 'Impossible de trouver le site web'];
 
                     $value = $request->values();
-
                     if ($nav_website != $website) {
                         $data = $website->getData();
                         $data['parent_exclude']['navigations'] = (isset($data['parent_exclude']['navigations']))
@@ -104,8 +111,8 @@ class AdminNavigationController extends AdminController
                     if (is_array($response)) return $response;
 
                     $response = (Navigation::watchAndSave($navigation))
-                        ? ['status' => 'success', 'message' => 'Les champs ont bien été mis à jour', 'resource' => $navigation]
-                        : ['status' => 'error', 'message' => 'Les champs n\'ont pas pu être mis à jour'];
+                        ? ['status' => 'success', 'message' => 'Le menu a bien été mis à jour', 'resource_id' => $navigation->getId()]
+                        : ['status' => 'error', 'message' => 'Le menu n\'a pas pu être mis à jour'];
                     return $response;
                 }
                 return ['status' => 'error', 'message' => 'Impossible de trouver le menu'];
@@ -149,7 +156,7 @@ class AdminNavigationController extends AdminController
         $response = $item_request->validate($item_request->rules(), $item_request::$messages, $value);
         if ($response === true) {
             if (empty($value['type_id'])) $value['type_id'] = null;
-            if (empty($value['route'])) $value['route'] = null;
+            if (empty($value['route']) || empty($value['route']['id'])) $value['route'] = null;
 
             $item->setTitle($value['title']);
             $item->setType($value['type']);
@@ -158,7 +165,7 @@ class AdminNavigationController extends AdminController
             $item->setPosition((int)$value['position']);
             $item->setNavigation($navigation);
 
-            if ($value['type'] != 'custom' && $value['type'] != 'page' && $value['route'] != null) {
+            if ($value['type'] != 'custom' && $value['type'] != 'page' && $value['route'] != null && isset($value['route']['id'])) {
                 $navigation_types = $this->app->data['app']['settings']['navigation'];
                 if (isset($navigation_types[$value['type']])) {
                     $callback = explode('@', $navigation_types[$value['type']]['get_url']);
@@ -168,10 +175,10 @@ class AdminNavigationController extends AdminController
                         ? $this->callMethod($callback[0], $callback[1], [$value['type_id']])
                         : $this->callMethod($callback[0], $callback[1], [$value['route']->getUrl(), $value['type_id']]);
                     if (is_array($value['url'])) return $value['url'];
+                    $item->setRoute($value['route']);
                 }
             }
 
-            $item->setRoute($value['route']);
             $item->setUrl($value['url']);
 
             if (isset($value['children']) && !empty($value['children'])) {

@@ -10,7 +10,15 @@ class LoadNavigationTemplate extends AbstractFixture implements OrderedFixtureIn
 {
 
     private $data = [
-
+        'navigation_simple' => [
+            'name' => 'ModuleNavigationPartialSimple',
+            'title' => 'Menu simple',
+            'content' => 'navigation',
+            'website' => null,
+            'category' => 'partial',
+            'scope' => 'global',
+            'type' => 'file'
+        ],
     ];
 
     public function load(ObjectManager $manager)
@@ -25,6 +33,7 @@ class LoadNavigationTemplate extends AbstractFixture implements OrderedFixtureIn
             $template->setCategory($data['category']);
             $template->setScope($data['scope']);
             $template->setType($data['type']);
+            if(!is_null($data['website']))$template->setWebsite($this->getReference($data['website']));
             $this->addReference($key, $template);
             $manager->persist($template);
 

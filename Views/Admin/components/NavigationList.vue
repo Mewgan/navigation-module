@@ -45,6 +45,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <tr v-if="navigations.length == 0">
+                                            <td colspan="4">Aucuns menus trouvés</td>
+                                        </tr>
                                         <tr v-for="navigation in navigations">
                                             <td>
                                                 <div class="checkbox checkbox-styled">

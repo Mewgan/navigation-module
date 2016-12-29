@@ -65,7 +65,7 @@
                             <select2 v-if="item.type != 'custom'" :launch="true"
                                      :val="[item.type_id]" :multiple="false"
                                      @updateValue="updateUrl"
-                                     :contents="publication_types[item.type].values"
+                                     :contents="getNavigationTypes(item.type)"
                                      :id="'url-item-select-' + item.id" index="title"
                                      label="Adresse web"></select2>
                             <div v-else class="form-group">
@@ -73,12 +73,12 @@
                                        class="form-control" :id="'url-item-' + item.id">
                                 <label :for="'url-item-' + item.id">Adresse web</label>
                             </div>
-                            <select2 v-if="item.type != 'custom'" :launch="true"
-                                     :multiple="false" :val="[item.route.id]"
-                                     @updateValue="updateItemRoute"
-                                     :contents="routes"
-                                     :id="'url-route-select-' + index" index="url"
-                                     label="Route"></select2>
+                            <div v-if="item.type != 'custom' && item.type != 'page'" class="form-group">
+                                <select v-model="item.route.id" :id="'url-route-select-' + index" class="form-control">
+                                    <option v-for="route in routes" :value="route.id">{{route.url}}</option>
+                                </select>
+                                <label :for="'url-route-select-' + index">Route</label>
+                            </div>
                             <div class="form-group">
                                 <input type="text" v-model="item.title"
                                        class="form-control" id="title-item">
@@ -90,7 +90,7 @@
             </div>
             <a @click="deleteNavBar(index, item.id)" class="btn delete-item btn-danger"><i
                     class="fa fa-trash"></i></a>
-            <navigation-repeater v-if="item.children.length > 0" :items="item.children"
+            <navigation-repeater v-if="'children' in item && item.children.length > 0" :items="item.children"
                                  :accordion_parent="accordion_parent" :publication_types="publication_types"
                                  :routes="routes" :nestableClass="nestableClass" :navigation_website="navigation_website"></navigation-repeater>
         </li>
@@ -137,17 +137,15 @@
             }
         },
         methods: {
+            getNavigationTypes(type){
+                return (type in this.publication_types && 'values' in this.publication_types[type]) ? this.publication_types[type]['values'] : [];
+            },
             updateUrl(val, oldVal){
                 let index = this.items.findIndex((key) => key.type_id == oldVal);
                 if (index >= 0) {
                     this.$set(this.items[index],'type_id', val);
                     this.$set(this.items[index],'url', val);
                 }
-            },
-            updateItemRoute(val, oldVal){
-                let index = this.items.findIndex((key) => key.route.id == oldVal);
-                if (index >= 0)
-                    this.$set(this.items[index]['route'],'id',val);
             },
             deleteNavBar(index, id){
                 if (id.substring(0, 6) != 'create' && this.navigation_website == this.website_id) {
@@ -158,7 +156,9 @@
         },
         mounted(){
             this.$nextTick(function () {
-                $(this.nestableClass).nestable();
+                $(this.nestableClass).nestable({
+                    maxDepth: 3
+                });
             });
         }
     }

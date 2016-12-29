@@ -1,0 +1,12 @@
+{% for item in items %}
+    <li>
+        {% if item.children|length > 0 %}
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ item.title }} <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                {% include "loop.html.twig" with {'items': item.children} %}
+            </ul>
+        {% else %}
+            <a href="{{ item.url }}">{{ item.title }}</a>
+        {% endif %}
+    </li>
+{% endfor %}
