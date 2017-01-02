@@ -71,8 +71,41 @@ class NavigationRepository extends EntityRepository
                 ->addSelect('partial r'.$i.'.{id,url}')
                 ->addOrderBy('i'.$i.'.position', 'ASC');
         }
+        $result = $query->getQuery()->getArrayResult();
+        return (isset($result[0])) ? $result[0] : null;
+    }
 
-        return $query->getQuery()->getArrayResult()[0];
+    /**
+     * @param $ids
+     * @return array
+     */
+    public function findById($ids = []){
+        $query = Navigation::queryBuilder()
+            ->select('partial n.{id}')
+            ->addSelect('partial w.{id}')
+            ->from('Jet\Modules\Navigation\Models\Navigation','n')
+            ->leftJoin('n.website','w');
+        return $query->where($query->expr()->in('n.id', ':ids'))
+            ->setParameter('ids',$ids)
+            ->getQuery()->getArrayResult();
+    }
+
+    /**
+     * @param $ids
+     * @return array
+     */
+    public function findItemsById($ids = [])
+    {
+        $query = NavigationItem::queryBuilder()
+            ->select('partial i.{id}')
+            ->addSelect('partial n.{id}')
+            ->addSelect('partial w.{id}')
+            ->from('Jet\Modules\Navigation\Models\NavigationItem', 'i')
+            ->leftJoin('i.navigation', 'n')
+            ->leftJoin('n.website', 'w');
+        return $query->where($query->expr()->in('i.id', ':ids'))
+            ->setParameter('ids', $ids)
+            ->getQuery()->getArrayResult();
     }
 
     /**
@@ -109,7 +142,8 @@ class NavigationRepository extends EntityRepository
                 ->addOrderBy('i'.$i.'.position', 'ASC');
         }
 
-        return $query->getQuery()->getArrayResult()[0];
+        $result = $query->getQuery()->getArrayResult();
+        return (isset($result[0])) ? $result[0] : null;
     }
 
     /**

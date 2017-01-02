@@ -162,7 +162,7 @@
         },
         methods: {
             ...mapActions([
-                'read', 'update'
+                'read', 'update', 'destroy'
             ]),
             updateItem(val){
                 this.nav_url = val;
@@ -202,11 +202,23 @@
                 }).then((response) => {
                     if (response.data.status == 'success'){
                         if(this.navigation_id == 'create')
-                            this.$router.replace({name: 'module:navigation:action', params: {website_id: this.website_id, custom_field_id: response.data.resource_id}});
+                            this.$router.replace({name: 'module:navigation:action', params: {website_id: this.website_id, navigation_id: response.data.resource.id}});
                         else
-                            location.reload();
+                            this.navigation = response.data.resource;
                     }
                 })
+            },
+            deleteNavigation(){
+                if('id' in this.navigation){
+                    this.destroy({
+                        api: navigation_api.destroy + this.website_id,
+                        ids: [this.navigation.id]
+                    }).then((response) => {
+                        if (response.data.status == 'success') {
+                            this.$router.push({name: 'module:navigation', params: {website_id: this.website_id}})
+                        }
+                    });
+                }
             },
             reorder(navs, items, new_items){
                 navs.forEach((el, key) => {

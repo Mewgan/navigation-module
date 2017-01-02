@@ -11,6 +11,7 @@ use Jet\Modules\Navigation\Models\Navigation;
 use Jet\Modules\Navigation\Models\NavigationItem;
 use Jet\Modules\Navigation\Requests\NavigationItemRequest;
 use Jet\Modules\Navigation\Requests\NavigationRequest;
+use Jet\Services\Auth;
 
 /**
  * Class AdminNavigationController
@@ -111,7 +112,7 @@ class AdminNavigationController extends AdminController
                     if (is_array($response)) return $response;
 
                     $response = (Navigation::watchAndSave($navigation))
-                        ? ['status' => 'success', 'message' => 'Le menu a bien été mis à jour', 'resource_id' => $navigation->getId()]
+                        ? ['status' => 'success', 'message' => 'Le menu a bien été mis à jour', 'resource' => Navigation::repo()->read($navigation->getId())]
                         : ['status' => 'error', 'message' => 'Le menu n\'a pas pu être mis à jour'];
                     return $response;
                 }
@@ -190,5 +191,68 @@ class AdminNavigationController extends AdminController
             return true;
         }
         return $response;
+    }
+
+    /**
+     * @param NavigationRequest $request
+     * @param Auth $auth
+     * @param $website
+     * @return array
+     */
+    public function delete(NavigationRequest $request, Auth $auth, $website)
+    {
+        if ($request->method() == 'DELETE' && $request->exists('ids')) {
+            $website = Website::findOneById($website);
+            if (is_null($website)) return ['status' => 'error', 'message' => 'Impossible de trouver le site web'];
+            $data = $website->getData();
+            $data['parent_exclude']['navigations'] = (isset($data['parent_exclude']['navigations'])) ? $data['parent_exclude']['navigations'] : [];
+
+            if(!$this->isWebsiteOwner($auth, $website->getId()))
+                return ['status' => 'error', 'message' => 'Vous n\'avez pas les permission pour supprimer ces catégories'];
+
+            $navigations = Navigation::repo()->findById($request->get('ids'));
+            $ids = [];
+
+            foreach ($navigations as $navigation) {
+                if ($navigation['website']['id'] != $website->getId()) {
+                    if (!in_array($navigation['id'], $data['parent_exclude']['navigations'])) $data['parent_exclude']['navigations'][] = $navigation['id'];
+                } else
+                    $ids[] = $navigation['id'];
+            }
+
+            $website->setData($data);
+            Website::watchAndSave($website);
+
+            return (Navigation::destroy($ids))
+                ? ['status' => 'success', 'message' => 'Les menus ont bien été supprimées']
+                : ['status' => 'error', 'message' => 'Erreur lors de la suppression'];
+        }
+        return ['status' => 'error', 'message' => 'Les menus n\'ont pas pu être supprimées'];
+    }
+
+    /**
+     * @param NavigationRequest $request
+     * @param Auth $auth
+     * @param $website
+     * @return array
+     */
+    public function deleteItem(NavigationRequest $request, Auth $auth, $website)
+    {
+        if ($request->method() == 'DELETE' && $request->exists('ids')) {
+
+            if(!$this->isWebsiteOwner($auth, $website))
+                return ['status' => 'error', 'message' => 'Vous n\'avez pas les permission pour supprimer ces catégories'];
+
+            $items = Navigation::repo()->findItemsById($request->get('ids'));
+            $ids = [];
+
+            foreach ($items as $item)
+                if ($item['navigation']['website']['id'] == $website) $ids[] = $item['id'];
+
+            return (NavigationItem::destroy($ids))
+                ? ['status' => 'success', 'message' => 'Les champs ont bien été supprimés']
+                : ['status' => 'error', 'message' => 'Erreur lors de la suppression'];
+        }
+        return ['status' => 'error', 'message' => 'Requête non autorisée'];
     }
 }
