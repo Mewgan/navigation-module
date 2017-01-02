@@ -4,6 +4,7 @@ export const navigation_api = {
     get_types: ADMIN_DOMAIN + '/module/navigation/get-types/',
     update_or_create: ADMIN_DOMAIN + '/module/navigation/update-or-create/',
     destroy: ADMIN_DOMAIN + '/module/navigation/delete/',
+    destroy_item: ADMIN_DOMAIN + '/module/navigation/delete-item/'
 };
 
 

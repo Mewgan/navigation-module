@@ -2,6 +2,9 @@
     .list-navigation .breadcrumb {
         display: inline-block;
     }
+    .list-navigation .section-header .pull-right{
+        margin-left: 10px;
+    }
     .list-navigation .section-body {
         margin-top: 10px;;
     }
@@ -11,11 +14,18 @@
     <section class="list-navigation">
         <div class="section-header">
             <ol class="breadcrumb">
-                <li class="active">Navigation</li>
+                <li class="active">Menu</li>
             </ol>
             <router-link class="btn ink-reaction btn-raised btn-lg btn-info pull-right" :to="{name: 'module:navigation:action', params: {website_id: website_id, navigation_id: 'create'}}">
                 <i class="fa fa-plus"></i> Ajouter un menu
             </router-link>
+            <div class="btn-group pull-right">
+                <button type="button" class="btn btn-lg ink-reaction btn-primary">Action</button>
+                <button type="button" class="btn btn-lg ink-reaction btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-caret-down"></i></button>
+                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                    <li><a @click="deleteNavigation"><i class="fa fa-fw fa-times text-danger"></i> Supprimer</a></li>
+                </ul>
+            </div>
         </div>
         <div class="section-body">
             <div class="card">
@@ -156,13 +166,12 @@
                     api: navigation_api.destroy + this.website_id,
                     ids: this.selected_items
                 }).then(() => {
-                    this.loadCategory();
+                    this.selected_items.forEach((el) => {
+                        let index = this.navigations.findIndex((nav) => nav.id == el);
+                        this.navigations.splice(index,1);
+                    })
+                    this.selected_items = [];
                 });
-            },
-            loadCategory(){
-                this.read({api: this.website_id}).then((response) => {
-                    this.categories = response.data;
-                })
             }
         },
         created () {

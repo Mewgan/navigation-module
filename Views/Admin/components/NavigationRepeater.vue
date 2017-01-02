@@ -1,11 +1,10 @@
 <style>
-    .nav-list .setup-bar , .dd-list .setup-bar {
+    .nav-list .setup-bar, .dd-list .setup-bar {
         width: 90%;
     }
     .nav-list .nav-bar span{
         text-transform: lowercase;
     }
-
     .nav-list .delete-item , .dd-list .delete-item {
         padding: 5px 10px 5px;
         position: absolute;
@@ -16,21 +15,17 @@
     .nav-list button, .dd-list button {
         color: black;
     }
-
     .nav-list li {
         margin: 5px 0;
     }
-
-    .nav-listt li .panel, .dd-list .panel {
+    .nav-list li .panel, .dd-list .panel {
         border: none;
         margin: auto;
         box-shadow: none;
     }
-
     .nav-list li .dd-handle, .dd-list .dd-handle {
         margin: 12px 5px !important;
     }
-
     .nav-list header, .dd-list header {
         box-shadow: none !important;
     }
@@ -38,6 +33,9 @@
     .nav-list a, .dd-list .tools a {
         cursor: pointer;
         display: inline-block;
+    }
+    .nav-list .delete-item{
+        cursor: pointer !important;
     }
 </style>
 
@@ -67,11 +65,16 @@
                                      @updateValue="updateUrl"
                                      :contents="getNavigationTypes(item.type)"
                                      :id="'url-item-select-' + item.id" index="title"
-                                     label="Adresse web"></select2>
+                                     label="Lien"></select2>
                             <div v-else class="form-group">
                                 <input type="text" v-model="item.url"
                                        class="form-control" :id="'url-item-' + item.id">
                                 <label :for="'url-item-' + item.id">Adresse web</label>
+                            </div>
+                            <div v-if="item.type != 'custom'" class="form-group">
+                                <input type="text" readonly :value="item.url"
+                                       class="form-control" :id="'url-' + item.id">
+                                <label :for="'url-' + item.id">Adresse web</label>
                             </div>
                             <div v-if="item.type != 'custom' && item.type != 'page'" class="form-group">
                                 <select v-model="item.route.id" :id="'url-route-select-' + index" class="form-control">
@@ -104,6 +107,8 @@
     import '../../../../../Blocks/AdminBlock/Resources/public/js/libs/nestable/jquery.nestable'
     import Select2 from '../../../../../Blocks/AdminBlock/Front/components/Helper/Select2.vue'
 
+    import {mapActions} from 'vuex'
+    import {navigation_api} from '../api'
 
     export default
     {
@@ -137,6 +142,9 @@
             }
         },
         methods: {
+            ...mapActions([
+                'destroy'
+            ]),
             getNavigationTypes(type){
                 return (type in this.publication_types && 'values' in this.publication_types[type]) ? this.publication_types[type]['values'] : [];
             },
@@ -148,8 +156,11 @@
                 }
             },
             deleteNavBar(index, id){
-                if (id.substring(0, 6) != 'create' && this.navigation_website == this.website_id) {
-
+                if (id === parseInt(id,10) && this.navigation_website == this.website_id) {
+                    this.destroy({
+                        api: navigation_api.destroy_item + this.$route.params.website_id,
+                        ids: [id]
+                    });
                 }
                 this.items.splice(index, 1);
             }
