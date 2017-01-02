@@ -34,7 +34,7 @@ class LoadNavigationTemplate extends AbstractFixture implements OrderedFixtureIn
             $template->setScope($data['scope']);
             $template->setType($data['type']);
             if(!is_null($data['website']))$template->setWebsite($this->getReference($data['website']));
-            $this->addReference($key, $template);
+            $this->setReference($key, $template);
             $manager->persist($template);
 
         }
@@ -48,6 +48,6 @@ class LoadNavigationTemplate extends AbstractFixture implements OrderedFixtureIn
      */
     public function getOrder()
     {
-        return 3;
+        return 203;
     }
 }

@@ -27,8 +27,8 @@ class LoadNavigation extends AbstractFixture implements OrderedFixtureInterface
                 : Navigation::findOneBy(['name' => $data['name'], 'website' => $website]);
             $navigation->setName($data['name']);
             $navigation->setWebsite($website);
-            $this->addReference($key, $navigation);
-            $this->addReference('website-' . $key, $website);
+            $this->setReference($key, $navigation);
+            $this->setReference('website-' . $key, $website);
             $manager->persist($navigation);
         }
 
@@ -42,6 +42,6 @@ class LoadNavigation extends AbstractFixture implements OrderedFixtureInterface
      */
     public function getOrder()
     {
-        return 4;
+        return 204;
     }
 }

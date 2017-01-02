@@ -38,7 +38,7 @@ class LoadNavigationModuleCategory extends AbstractFixture implements OrderedFix
         $cat->setAccessLevel($this->data['access_level']);
         $cat->setDescription($this->data['description']);
         $manager->persist($cat);
-        $this->addReference($this->data['slug'], $cat);
+        $this->setReference($this->data['slug'], $cat);
         $manager->flush();
     }
 
@@ -50,6 +50,6 @@ class LoadNavigationModuleCategory extends AbstractFixture implements OrderedFix
      */
     public function getOrder()
     {
-        return 1;
+        return 201;
     }
 }

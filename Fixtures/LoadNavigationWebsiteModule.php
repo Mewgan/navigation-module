@@ -92,6 +92,6 @@ class LoadNavigationWebsiteModule extends AbstractFixture implements OrderedFixt
      */
     public function getOrder()
     {
-        return 7;
+        return 207;
     }
 }
