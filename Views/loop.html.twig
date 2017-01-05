@@ -6,7 +6,7 @@
                 {% include "loop.html.twig" with {'items': item.children} %}
             </ul>
         {% else %}
-            <a href="{{ item.url }}">{{ item.title }}</a>
+            <a href="{{ full_url(item.url) }}">{{ item.title }}</a>
         {% endif %}
     </li>
 {% endfor %}

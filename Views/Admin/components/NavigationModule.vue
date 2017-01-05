@@ -116,20 +116,19 @@
                 'read'
             ]),
             updateContent(){
-                this.$emit('updateContent',this.content);
+                this.$emit('updateContent', this.content);
             }
         },
-        created () {
+        created(){
             this.read({api: template_api.get_website_content_layouts + this.website}).then((response) => {
                 this.templates = response.data;
             });
             this.read({api: navigation_api.all + this.website_id}).then((response) => {
-                if('resource' in response.data)
+                if ('resource' in response.data) {
                     this.navigations = response.data.resource;
+                    if ('navigation' in this.content.data)this.content_data = this.content.data;
+                }
             })
-        },
-        mounted(){
-            if ('navigation' in this.content.data)this.content_data = this.content.data;
         }
     }
 </script>

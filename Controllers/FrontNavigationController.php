@@ -23,7 +23,9 @@ class FrontNavigationController extends MainController
                 $this->getThemeWebsites($website);
             }
             $navigation = Navigation::repo()->renderFront($data['navigation'], ['websites' => $this->websites, 'exclude' => $website->getData()]);
-            return $this->_renderContent($content->getTemplate(), 'src/Modules/Navigation/Views/', compact('navigation'));
+            return (is_null($navigation))
+                ? null
+                : $this->_renderContent($content->getTemplate(), 'src/Modules/Navigation/Views/', compact('navigation'));
         }
         return null;
     }
