@@ -64,7 +64,7 @@
                                      :val="[item.type_id]" :multiple="false"
                                      @updateValue="updateUrl"
                                      :contents="getNavigationTypes(item.type)"
-                                     :id="'url-item-select-' + item.id" index="title"
+                                     :id="'url-item-select-' + item.id" index="name"
                                      label="Lien"></select2>
                             <div v-else class="form-group">
                                 <input type="text" v-model="item.url"

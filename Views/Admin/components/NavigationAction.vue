@@ -79,7 +79,7 @@
                                 <div class="card-body">
                                     <select2 :launch="true" :multiple="false" @updateValue="updateItem"
                                              :contents="publication_type.values" :id="'item-select-' + index"
-                                             index="title"
+                                             index="name"
                                              label="Lien"></select2>
                                     <select2 v-if="publication_type.id != 'page'" :launch="true" :multiple="false"
                                              @updateValue="updateRoute"

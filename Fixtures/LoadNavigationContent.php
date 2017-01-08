@@ -19,7 +19,7 @@ class LoadNavigationContent extends AbstractFixture implements OrderedFixtureInt
             'block' => 'navigation',
             'website' => 'aster-society',
             'module' => 'module_simple_menu',
-            'template' => 'navigation_simple',
+            'template' => 'aster_navigation_partial',
             'section' => null,
             'page' => null,
             'data' => [

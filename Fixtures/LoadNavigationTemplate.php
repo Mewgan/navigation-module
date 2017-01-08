@@ -19,6 +19,16 @@ class LoadNavigationTemplate extends AbstractFixture implements OrderedFixtureIn
             'scope' => 'global',
             'type' => 'file'
         ],
+        /* Aster template */
+        'aster_navigation_partial' => [
+            'name' => 'ThemeAsterNavigationFilePartial',
+            'title' => 'Theme Aster Navigation Template',
+            'content' => 'Themes/Aster/navigation',
+            'website' => 'Aster Website',
+            'category' => 'partial',
+            'scope' => 'specified',
+            'type' => 'file'
+        ],
     ];
 
     public function load(ObjectManager $manager)
