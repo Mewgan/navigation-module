@@ -39,7 +39,7 @@ class AdminNavigationController extends AdminController
         $navigation = (!isset($this->app->data['app']['settings']['navigation'])) ? [] : $this->app->data['app']['settings']['navigation'];
         foreach ($navigation as $key => $type) {
             $callback = explode('@', $type['all']);
-            $value = $this->callMethod($callback[0], $callback[1], [$website]);
+            $value = $this->callMethod($callback[0], $callback[1], ['website' => $website]);
             if (!isset($value['resource'])) return $value;
             $navigation[$key]['values'] = $value['resource'];
         }
@@ -173,8 +173,8 @@ class AdminNavigationController extends AdminController
                     $value['route'] = Route::findOneById($value['route']['id']);
                     if (is_null($value['route'])) return ['status' => 'error', 'message' => 'Impossible de trouver la route'];
                     $value['url'] = ($value['type'] == 'page')
-                        ? $this->callMethod($callback[0], $callback[1], [$value['type_id']])
-                        : $this->callMethod($callback[0], $callback[1], [$value['route']->getUrl(), $value['type_id']]);
+                        ? $this->callMethod($callback[0], $callback[1], ['id' => $value['type_id']])
+                        : $this->callMethod($callback[0], $callback[1], ['url' => $value['route']->getUrl(), 'id' => $value['type_id']]);
                     if (is_array($value['url'])) return $value['url'];
                     $item->setRoute($value['route']);
                 }
