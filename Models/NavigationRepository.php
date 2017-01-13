@@ -127,9 +127,15 @@ class NavigationRepository extends EntityRepository
             ->leftJoin('n.website', 'w')
             ->leftJoin('i0.parent', 'p');
 
-        $query->where($query->expr()->eq('n.id', ':id'))
-            ->setParameter('id', $id)
-            ->andWhere($query->expr()->isNull('p.id'));
+        if(isset($params['exclude']['parent_replace']) && isset($params['exclude']['parent_replace']['navigations']) && !empty($params['exclude']['parent_replace']['navigations']) && isset($params['exclude']['parent_replace']['navigations'][$id])){
+            $query->where($query->expr()->eq('n.id', ':id'))
+                ->setParameter('id', $params['exclude']['parent_replace']['navigations'][$id]);
+        }else{
+            $query->where($query->expr()->eq('n.id', ':id'))
+                ->setParameter('id', $id);
+        }
+
+        $query->andWhere($query->expr()->isNull('p.id'));
 
         $query = $this->getQueryParams($query,$params);
 

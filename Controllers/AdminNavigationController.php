@@ -78,6 +78,7 @@ class AdminNavigationController extends AdminController
     {
         if ($request->method() == 'PUT' || $request->method() == 'POST') {
             $response = $request->validate();
+            $replace = false;
             if ($response === true) {
 
                 $website = Website::findOneById($website);
@@ -95,14 +96,11 @@ class AdminNavigationController extends AdminController
 
                     $value = $request->values();
                     if ($nav_website != $website) {
-                        $data = $website->getData();
-                        $data['parent_exclude']['navigations'] = (isset($data['parent_exclude']['navigations']))
-                            ? $data['parent_exclude']['navigations'] : [];
-                        if (!in_array($navigation->getId(), $data['parent_exclude']['navigations']))
-                            $data['parent_exclude']['navigations'][] = $navigation->getId();
+                        $data = $this->excludeData($website->getData(),'navigations',$navigation->getId());
                         $website->setData($data);
                         Website::watch($website);
                         $navigation = new Navigation();
+                        $replace = true;
                     }
 
                     $navigation->setName($value['name']);
@@ -111,10 +109,17 @@ class AdminNavigationController extends AdminController
 
                     if (is_array($response)) return $response;
 
-                    $response = (Navigation::watchAndSave($navigation))
-                        ? ['status' => 'success', 'message' => 'Le menu a bien été mis à jour', 'resource' => Navigation::repo()->read($navigation->getId())]
-                        : ['status' => 'error', 'message' => 'Le menu n\'a pas pu être mis à jour'];
-                    return $response;
+                    if(Navigation::watchAndSave($navigation)){
+                        $this->app->emit('updateNavigation', [$navigation->getId()]);
+                        if($replace){
+                            $website = $navigation->getWebsite();
+                            $data = $this->replaceData($website->getData(), 'navigations', $id, $navigation->getId());
+                            $website->setData($data);
+                            Website::watchAndSave($website);
+                        }
+                        return ['status' => 'success', 'message' => 'Le menu a bien été mis à jour', 'resource' => Navigation::repo()->read($navigation->getId())];
+                    }
+                    return ['status' => 'error', 'message' => 'Le menu n\'a pas pu être mis à jour'];
                 }
                 return ['status' => 'error', 'message' => 'Impossible de trouver le menu'];
             }
@@ -205,7 +210,6 @@ class AdminNavigationController extends AdminController
             $website = Website::findOneById($website);
             if (is_null($website)) return ['status' => 'error', 'message' => 'Impossible de trouver le site web'];
             $data = $website->getData();
-            $data['parent_exclude']['navigations'] = (isset($data['parent_exclude']['navigations'])) ? $data['parent_exclude']['navigations'] : [];
 
             if(!$this->isWebsiteOwner($auth, $website->getId()))
                 return ['status' => 'error', 'message' => 'Vous n\'avez pas les permission pour supprimer ces catégories'];
@@ -215,7 +219,7 @@ class AdminNavigationController extends AdminController
 
             foreach ($navigations as $navigation) {
                 if ($navigation['website']['id'] != $website->getId()) {
-                    if (!in_array($navigation['id'], $data['parent_exclude']['navigations'])) $data['parent_exclude']['navigations'][] = $navigation['id'];
+                    $data = $this->excludeData($data, 'navigations', $navigation['id']);
                 } else
                     $ids[] = $navigation['id'];
             }

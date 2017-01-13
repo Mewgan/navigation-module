@@ -91,7 +91,7 @@
                     </div>
                 </div>
             </div>
-            <a @click="deleteNavBar(index, item.id)" class="btn delete-item btn-danger"><i
+            <a @click="deleteItem(index, item.id)" class="btn delete-item btn-danger"><i
                     class="fa fa-trash"></i></a>
             <navigation-repeater v-if="'children' in item && item.children.length > 0" :items="item.children"
                                  :accordion_parent="accordion_parent" :publication_types="publication_types"
@@ -155,7 +155,7 @@
                     this.$set(this.items[index],'url', val);
                 }
             },
-            deleteNavBar(index, id){
+            deleteItem(index, id){
                 if (id === parseInt(id,10) && this.navigation_website == this.website_id) {
                     this.destroy({
                         api: navigation_api.destroy_item + this.$route.params.website_id,
