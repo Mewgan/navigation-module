@@ -102,9 +102,9 @@
 
 <script type="text/babel">
 
-    import '../../../../../Blocks/AdminBlock/Resources/public/css/libs/nestable/nestable.css'
+    import '../../../../../Blocks/AdminBlock/Resources/public/libs/nestable/nestable.css'
 
-    import '../../../../../Blocks/AdminBlock/Resources/public/js/libs/nestable/jquery.nestable'
+    import '../../../../../Blocks/AdminBlock/Resources/public/libs/nestable/jquery.nestable'
     import Select2 from '../../../../../Blocks/AdminBlock/Front/components/Helper/Select2.vue'
 
     import {mapActions} from 'vuex'
