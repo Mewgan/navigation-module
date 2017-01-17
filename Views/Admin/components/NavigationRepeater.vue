@@ -71,7 +71,7 @@
                                        class="form-control" :id="'url-item-' + item.id">
                                 <label :for="'url-item-' + item.id">Adresse web</label>
                             </div>
-                            <div v-if="item.type != 'custom'" class="form-group">
+                            <div v-if="item.type != 'custom' && item.id === parseInt(item.id,10)" class="form-group">
                                 <input type="text" readonly :value="item.url"
                                        class="form-control" :id="'url-' + item.id">
                                 <label :for="'url-' + item.id">Adresse web</label>

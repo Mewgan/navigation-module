@@ -23,7 +23,7 @@ class LoadNavigationTemplate extends AbstractFixture implements OrderedFixtureIn
         'aster_navigation_partial' => [
             'name' => 'ThemeAsterNavigationFilePartial',
             'title' => 'Theme Aster Navigation Template',
-            'content' => 'Themes/Aster/navigation',
+            'content' => 'Aster/Views/navigation',
             'website' => 'Aster Website',
             'category' => 'partial',
             'scope' => 'specified',
