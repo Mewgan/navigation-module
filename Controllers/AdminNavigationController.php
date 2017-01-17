@@ -93,18 +93,19 @@ class AdminNavigationController extends AdminController
                 }
 
                 if (!is_null($navigation)) {
-
-                    $value = $request->values();
-                    if ($nav_website != $website) {
+                    
+                    if ($nav_website != $website && $id != 'create') {
                         $data = $this->excludeData($website->getData(),'navigations',$navigation->getId());
                         $website->setData($data);
                         Website::watch($website);
                         $navigation = new Navigation();
                         $replace = true;
                     }
-
-                    $navigation->setName($value['name']);
                     $navigation->setWebsite($website);
+                    
+                    $value = $request->values();
+                    $navigation->setName($value['name']);
+
                     $response = $this->updateNavigationItems($item_request, $navigation, $value['items'], $nav_website);
 
                     if (is_array($response)) return $response;

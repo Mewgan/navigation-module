@@ -102,9 +102,6 @@
 
 <script type="text/babel">
 
-    import '../../../../../Blocks/AdminBlock/Resources/public/libs/nestable/nestable.css'
-
-    import '../../../../../Blocks/AdminBlock/Resources/public/libs/nestable/jquery.nestable'
     import Select2 from '../../../../../Blocks/AdminBlock/Front/components/Helper/Select2.vue'
 
     import {mapActions} from 'vuex'
@@ -128,9 +125,6 @@
             routes: {
                 required: true,
                 type: Array
-            },
-            nestableClass: {
-                default: '.nestable-list'
             },
             navigation_website: {
                 required: true
@@ -164,13 +158,6 @@
                 }
                 this.items.splice(index, 1);
             }
-        },
-        mounted(){
-            this.$nextTick(function () {
-                $(this.nestableClass).nestable({
-                    maxDepth: 3
-                });
-            });
         }
     }
 </script>
