@@ -81,8 +81,8 @@
                                              :contents="publication_type.values" :id="'item-select-' + index"
                                              index="name"
                                              label="Lien"></select2>
-                                    <select2 v-if="publication_type.id != 'page'" :launch="true" :multiple="false"
-                                             @updateValue="updateRoute"
+                                    <select2 v-if="publication_type.id != 'page' && routes.length > 0 && auth.status.level < 4" :launch="true" :multiple="false"
+                                             @updateValue="updateRoute" :val="('route_id' in publication_type) ? [publication_type.route_id] : []"
                                              :contents="routes" :id="'route-select-' + index" index="url"
                                              label="Route"></select2>
                                     <div class="form-group">
@@ -141,7 +141,7 @@
     import Select2 from '../../../../../Blocks/AdminBlock/Front/components/Helper/Select2.vue'
     import NavigationRepeater from './NavigationRepeater.vue'
 
-    import {mapActions} from 'vuex'
+    import {mapGetters, mapActions} from 'vuex'
     import {route_api} from '../../../../../Blocks/AdminBlock/Front/api'
     import {navigation_api} from '../api'
 
@@ -163,6 +163,9 @@
                 nav_route: null
             }
         },
+        computed: {
+            ...mapGetters(['auth']),
+        },
         methods: {
             ...mapActions([
                 'read', 'update', 'destroy'
@@ -176,7 +179,9 @@
             addNavBar(bloc, type){
                 let link = '';
                 let type_id = null;
+                if(this.nav_route == null) this.nav_route = ('route_id' in this.publication_types[type]) ? this.publication_types[type]['route_id'] : null;
                 let url = this.nav_url;
+
                 if ($('#' + bloc + ' .link-label').val() != '' && (type == 'custom' || type == 'page' || this.nav_route != null) && this.nav_url != null) {
                     (type != 'custom') ? type_id = this.nav_url : this.nav_route = null;
                     let item = {
