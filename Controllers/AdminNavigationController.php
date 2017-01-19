@@ -2,9 +2,7 @@
 
 namespace Jet\Modules\Navigation\Controllers;
 
-
 use Jet\AdminBlock\Controllers\AdminController;
-use Jet\Models\Page;
 use Jet\Models\Route;
 use Jet\Models\Website;
 use Jet\Modules\Navigation\Models\Navigation;
@@ -36,12 +34,20 @@ class AdminNavigationController extends AdminController
      */
     public function getTypes($website)
     {
+        if(!$this->getWebsite($website))return ['status' => 'error', 'message' => 'Impossible de trouver le site'];
+
         $navigation = (!isset($this->app->data['app']['settings']['navigation'])) ? [] : $this->app->data['app']['settings']['navigation'];
         foreach ($navigation as $key => $type) {
+
             $callback = explode('@', $type['all']);
             $value = $this->callMethod($callback[0], $callback[1], ['website' => $website]);
             if (!isset($value['resource'])) return $value;
             $navigation[$key]['values'] = $value['resource'];
+
+            if(isset($type['route'])){
+                $route = Route::repo()->getRouteByName($type['route'], $this->websites, $this->website->getData());
+                if(!is_null($route))$navigation[$key]['route_id'] = $route['id'];
+            }
         }
         return ['publication_types' => $navigation];
     }
@@ -93,7 +99,7 @@ class AdminNavigationController extends AdminController
                 }
 
                 if (!is_null($navigation)) {
-                    
+
                     if ($nav_website != $website && $id != 'create') {
                         $data = $this->excludeData($website->getData(),'navigations',$navigation->getId());
                         $website->setData($data);
@@ -102,7 +108,7 @@ class AdminNavigationController extends AdminController
                         $replace = true;
                     }
                     $navigation->setWebsite($website);
-                    
+
                     $value = $request->values();
                     $navigation->setName($value['name']);
 

@@ -76,7 +76,7 @@
                                        class="form-control" :id="'url-' + item.id">
                                 <label :for="'url-' + item.id">Adresse web</label>
                             </div>
-                            <div v-if="item.type != 'custom' && item.type != 'page'" class="form-group">
+                            <div v-if="item.type != 'custom' && item.type != 'page' && auth.status.level < 4" class="form-group">
                                 <select v-model="item.route.id" :id="'url-route-select-' + index" class="form-control">
                                     <option v-for="route in routes" :value="route.id">{{route.url}}</option>
                                 </select>
@@ -104,7 +104,7 @@
 
     import Select2 from '../../../../../Blocks/AdminBlock/Front/components/Helper/Select2.vue'
 
-    import {mapActions} from 'vuex'
+    import {mapGetters, mapActions} from 'vuex'
     import {navigation_api} from '../api'
 
     export default
@@ -134,6 +134,9 @@
             return {
                 website_id: this.$route.params.website_id
             }
+        },
+        computed: {
+            ...mapGetters(['auth']),
         },
         methods: {
             ...mapActions([
