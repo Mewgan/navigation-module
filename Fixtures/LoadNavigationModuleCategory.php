@@ -2,12 +2,11 @@
 namespace Jet\Modules\Navigation\Fixtures;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Jet\Services\LoadFixture;
 
 
-class LoadNavigationModuleCategory extends AbstractFixture implements OrderedFixtureInterface
+class LoadNavigationModuleCategory extends AbstractFixture
 {
     use LoadFixture;
 
@@ -29,14 +28,4 @@ class LoadNavigationModuleCategory extends AbstractFixture implements OrderedFix
         $this->loadModuleCategory($manager);
     }
 
-
-    /**
-     * Get the order of this fixture
-     *
-     * @return integer
-     */
-    public function getOrder()
-    {
-        return 201;
-    }
 }

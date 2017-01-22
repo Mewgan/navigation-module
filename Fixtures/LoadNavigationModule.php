@@ -1,12 +1,12 @@
 <?php
 namespace Jet\Modules\Navigation\Fixtures;
 
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Jet\Services\LoadFixture;
 
-class LoadNavigationModule extends AbstractFixture implements OrderedFixtureInterface
+class LoadNavigationModule extends AbstractFixture implements DependentFixtureInterface
 {
     use LoadFixture;
 
@@ -17,8 +17,7 @@ class LoadNavigationModule extends AbstractFixture implements OrderedFixtureInte
             'callback' => 'Jet\Modules\Navigation\Controllers\FrontNavigationController@show',
             'description' => 'Affiche un menu simple',
             'category' => 'navigation',
-            'access_level' => 4,
-            'templates' => []
+            'access_level' => 4
         ],
     ];
 
@@ -28,12 +27,15 @@ class LoadNavigationModule extends AbstractFixture implements OrderedFixtureInte
     }
 
     /**
-     * Get the order of this fixture
+     * This method must return an array of fixtures classes
+     * on which the implementing class depends on
      *
-     * @return integer
+     * @return array
      */
-    public function getOrder()
+    function getDependencies()
     {
-        return 202;
+        return [
+            'Jet\Modules\Navigation\Fixtures\LoadNavigationModuleCategory'
+        ];
     }
 }
