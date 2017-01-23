@@ -9,11 +9,23 @@ use Jet\Models\Route;
 use Jet\Models\Website;
 use Jet\Modules\Navigation\Models\Navigation;
 use Jet\Modules\Navigation\Models\NavigationItem;
-use Jet\Modules\Post\Models\Post;
-use Jet\Modules\Post\Models\PostCategory;
 
 trait LoadNavigationFixture
 {
+
+    protected $navigation_type_callback = [
+            'page' => 'getPageTypeId'
+    ];
+
+    /**
+     * @param $key
+     * @param $value
+     */
+    public function addNavigationTypeCallback($key, $value)
+    {
+        $this->navigation_type_callback[$key] = $value;
+    }
+
 
     /**
      * @param ObjectManager $manager
@@ -101,21 +113,19 @@ trait LoadNavigationFixture
      */
     private function getTypeId($type, $title, $website){
         if($this->hasReference($title)) return $this->getReference($title)->getId();
-        switch ($type){
-            case 'page':
-                $page = Page::findOneBy(['title' => $title, 'website' => $website]);
-                return $page->getId();
-                break;
-            case 'post':
-                $post = Post::findOneBy(['title' => $title, 'website' => $website]);
-                return $post->getId();
-                break;
-            case 'post_category':
-                $cat = PostCategory::findOneBy(['name' => $title, 'website' => $website]);
-                return $cat->getId();
-                break;
-        }
+        if(isset($this->navigation_type_callback[$type]))
+            return call_user_func_array([$this,$this->navigation_type_callback[$type]], [$title, $website]);
         return null;
+    }
+
+    /**
+     * @param $title
+     * @param $website
+     * @return mixed
+     */
+    protected function getPageTypeId($title, $website){
+        $page = $this->hasReference($title) ? $this->getReference($title) : Page::findOneBy(['title' => $title, 'website' => $website]);
+        return $page->getId();
     }
 
     /**
