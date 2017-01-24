@@ -70,8 +70,8 @@
                                             </td>
                                             <td>
                                                 <span class="post-icon"><i
-                                                        :title="getIconTitle('Ce menu',navigation.website.id)"
-                                                        :class="getIconClass(navigation.website.id)"></i> </span>
+                                                        :title="getIconTitle('Ce menu',navigation.website)"
+                                                        :class="getIconClass(navigation.website)"></i> </span>
                                             </td>
                                             <td>{{navigation.name}}</td>
                                             <td>
@@ -153,10 +153,10 @@
                 'read', 'destroy'
             ]),
             getIconClass (website) {
-                return (this.website_id == website) ? 'fa fa-laptop' : 'fa fa-sitemap';
+                return (website != null && 'id' in website && this.website_id == website.id) ? 'fa fa-laptop' : 'fa fa-sitemap';
             },
             getIconTitle (content, website) {
-                return (this.website_id == website) ? content + ' vient du site' : content + ' vient du thème parent';
+                return (website != null && 'id' in website && this.website_id == website.id) ? content + ' vient du site' : content + ' vient du thème parent';
             },
             selectNavigation(id){
                 this.selected_items = [id];

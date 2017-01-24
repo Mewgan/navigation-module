@@ -178,7 +178,7 @@ class AdminNavigationController extends AdminController
             $item->setPosition((int)$value['position']);
             $item->setNavigation($navigation);
 
-            if ($value['type'] != 'custom' && $value['type'] != 'page' && $value['route'] != null && isset($value['route']['id'])) {
+            if ($value['type'] != 'custom' && $value['route'] != null && isset($value['route']['id'])) {
                 $navigation_types = $this->app->data['app']['settings']['navigation'];
                 if (isset($navigation_types[$value['type']])) {
                     $callback = explode('@', $navigation_types[$value['type']]['get_url']);
