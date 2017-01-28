@@ -171,7 +171,7 @@
             addNavBar(bloc, type){
                 let link = '';
                 let type_id = null;
-                if(this.nav_route == null) this.nav_route = ('route_id' in this.publication_types[type]) ? this.publication_types[type]['route_id'] : null;
+                if(this.nav_route == null) this.nav_route = (type in this.publication_types && 'route_id' in this.publication_types[type]) ? this.publication_types[type]['route_id'] : null;
                 let url = this.nav_url;
                 if ($('#' + bloc + ' .link-label').val() != '' && (type == 'custom' || type == 'page' || this.nav_route != null) && this.nav_url != null) {
                     (type != 'custom') ? type_id = this.nav_url : this.nav_route = null;

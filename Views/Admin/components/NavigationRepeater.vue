@@ -28,6 +28,8 @@
     }
     .nav-list header, .dd-list header {
         box-shadow: none !important;
+        padding: 5px 25px;
+        width: 75%;
     }
 
     .nav-list a, .dd-list .tools a {
@@ -46,14 +48,15 @@
             <div class="dd-handle btn btn-default-light"></div>
             <div class="btn setup-bar btn-default-light">
                 <div class="card panel">
-                    <div class="card-head card-head-sm collapsed" data-toggle="collapse"
-                         :data-parent="accordion_parent"
-                         :data-target="'#item-accordion-' + item.id"
-                         aria-expanded="false">
-                        <header>{{item.title}}</header>
+                    <div class="card-head card-head-sm collapsed">
+                        <header><input type="text" v-model="item.title"
+                                       class="form-control"></header>
                         <div class="tools">
-                            <em>{{item.type}}</em>
-                            <a class="btn btn-icon-toggle"><i
+                            <em v-show="auth.status.level < 4">{{item.type}}</em>
+                            <a class="btn btn-icon-toggle" data-toggle="collapse"
+                               :data-parent="accordion_parent"
+                               :data-target="'#item-accordion-' + item.id"
+                               aria-expanded="false"><i
                                     class="fa fa-angle-down"></i></a>
                         </div>
                     </div>
@@ -71,7 +74,7 @@
                                        class="form-control" :id="'url-item-' + item.id">
                                 <label :for="'url-item-' + item.id">Adresse web</label>
                             </div>
-                            <div v-if="item.type != 'custom' && item.id === parseInt(item.id,10)" class="form-group">
+                            <div v-if="item.type != 'custom' && item.id === parseInt(item.id,10) && auth.status.level < 4" class="form-group">
                                 <input type="text" readonly :value="item.url"
                                        class="form-control" :id="'url-' + item.id">
                                 <label :for="'url-' + item.id">Adresse web</label>
@@ -81,11 +84,6 @@
                                     <option v-for="route in routes" :value="route.id">{{route.url}}</option>
                                 </select>
                                 <label :for="'url-route-select-' + index">Route</label>
-                            </div>
-                            <div class="form-group">
-                                <input type="text" v-model="item.title"
-                                       class="form-control" id="title-item">
-                                <label for="title-item">Titre de la navigation</label>
                             </div>
                         </div>
                     </div>
