@@ -178,16 +178,23 @@ class AdminNavigationController extends AdminController
             $item->setPosition((int)$value['position']);
             $item->setNavigation($navigation);
 
-            if ($value['type'] != 'custom' && $value['route'] != null && isset($value['route']['id'])) {
+            if ($value['type'] != 'custom') {
                 $navigation_types = $this->app->data['app']['settings']['navigation'];
                 if (isset($navigation_types[$value['type']])) {
                     $callback = explode('@', $navigation_types[$value['type']]['get_url']);
-                    $value['route'] = Route::findOneById($value['route']['id']);
-                    if (is_null($value['route'])) return ['status' => 'error', 'message' => 'Impossible de trouver la route'];
-                    $value['url'] = ($value['type'] == 'page')
-                        ? $this->callMethod($callback[0], $callback[1], ['id' => $value['type_id']])
-                        : $this->callMethod($callback[0], $callback[1], ['url' => $value['route']->getUrl(), 'id' => $value['type_id']]);
-                    if (is_array($value['url'])) return $value['url'];
+                    if($value['type'] == 'page'){
+                        $route = $this->callMethod($callback[0], $callback[1], ['id' => $value['type_id']]);
+                        if(is_array($route)) return $route;
+                        $value['route'] = $route;
+                        $value['url'] = $route->getUrl();
+                    }else{
+                        if(empty($value['route']) || !isset($value['route']['id']) || empty($value['route']['id']))
+                            return ['status' => 'error', 'message' => 'La route n\'est pas définie pour :'. $value['title']];
+                        $value['route'] = Route::findOneById($value['route']['id']);
+                        if (is_null($value['route'])) return ['status' => 'error', 'message' => 'Impossible de trouver la route'];
+                        $value['url'] =  $this->callMethod($callback[0], $callback[1], ['url' => $value['route']->getUrl(), 'id' => $value['type_id']]);
+                        if (is_array($value['url'])) return $value['url'];
+                    }
                     $item->setRoute($value['route']);
                 }
             }

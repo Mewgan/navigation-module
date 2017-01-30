@@ -18,7 +18,7 @@ return [
                     'name' => 'Page',
                     'plural' => 'Pages',
                     'all' => '\\Jet\\AdminBlock\\Controllers\\PageController@listStaticPages',
-                    'get_url' => '\\Jet\\AdminBlock\\Controllers\\PageController@getStaticPageUrl'
+                    'get_url' => '\\Jet\\AdminBlock\\Controllers\\PageController@getStaticPageRoute'
                 ],
             ],
         ]
