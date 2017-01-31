@@ -201,7 +201,7 @@
                 }).then((response) => {
                     if (response.data.status == 'success'){
                         if(this.navigation_id == 'create')
-                            this.$router.replace({name: 'module:navigation:action', params: {website_id: this.website_id, navigation_id: response.data.resource.id}});
+                            this.$router.push({name: 'module:navigation:action', params: {website_id: this.website_id, navigation_id: response.data.resource.id}});
                         else
                             this.navigation = response.data.resource;
                     }
