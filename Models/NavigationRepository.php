@@ -109,6 +109,29 @@ class NavigationRepository extends EntityRepository
     }
 
     /**
+     * @param $type
+     * @param $type_id
+     * @param $params
+     * @return array
+     */
+    public function findItemsByWebsite($type, $type_id, $params){
+        $query = Navigation::queryBuilder()
+            ->select('i')
+            ->from('Jet\Modules\Navigation\Models\NavigationItem','i')
+            ->leftJoin('i.navigation','n')
+            ->leftJoin('n.website','w');
+
+        $query->where($query->expr()->eq('i.type', ':type'))
+            ->andWhere($query->expr()->eq('i.type_id', ':type_id'))
+            ->setParameter('type', $type)
+            ->setParameter('type_id', $type_id);
+
+        $query = $this->getQueryParams($query, $params);
+
+        return $query->getQuery()->getResult();
+    }
+
+    /**
      * @param $id
      * @param array $params
      * @param int $level
