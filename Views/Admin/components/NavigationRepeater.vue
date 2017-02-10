@@ -2,6 +2,9 @@
     .nav-list .setup-bar, .dd-list .setup-bar {
         width: 90%;
     }
+    .nav-list .setup-bar .tools i, .dd-list .setup-bar .tools i{
+        margin: 0;
+    }
     .nav-list .nav-bar span{
         text-transform: lowercase;
     }
@@ -52,12 +55,12 @@
                         <header><input type="text" v-model="item.title"
                                        class="form-control"></header>
                         <div class="tools">
-                            <em v-show="auth.status.level < 4">{{item.type}}</em>
-                            <a class="btn btn-icon-toggle" data-toggle="collapse"
+                            <em v-show="auth.status.level < 4">{{item.type}} </em>
+                            <a class="btn btn-warning" data-toggle="collapse"
                                :data-parent="accordion_parent"
                                :data-target="'#item-accordion-' + item.id"
                                aria-expanded="false"><i
-                                    class="fa fa-angle-down"></i></a>
+                                    class="fa fa-pencil"></i></a>
                         </div>
                     </div>
                     <div :id="'item-accordion-' + item.id" class="collapse nav-bar"

@@ -17,8 +17,13 @@ export var content_routes = {
     navigation:  (resolve) => { require(['./components/NavigationModule.vue'],resolve)}
 };
 
+export var field_routes = {
+    navigationCustomField: (resolve) => { require(['./components/NavigationCustomField.vue'],resolve) },
+    navigationRenderCustomField: (resolve) => { require(['./components/NavigationRenderCustomField.vue'],resolve) },
+};
 
 export default {
     routes,
-    content_routes
+    content_routes,
+    field_routes
 }

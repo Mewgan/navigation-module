@@ -12,6 +12,12 @@
 
 <template>
     <section class="list-navigation">
+
+        <div class="alert alert-info" role="alert">
+            <p><strong>Vous vous trouvez sur la page de gestion des menus</strong></p>
+            <p>Il vous est possible de créer plusieurs menus pour les ajouter à différent endroit de votre site</p>
+        </div>
+
         <div class="section-header">
             <ol class="breadcrumb">
                 <li class="active">Menu</li>
@@ -27,6 +33,7 @@
                 </ul>
             </div>
         </div>
+
         <div class="section-body">
             <div class="card">
 

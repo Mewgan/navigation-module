@@ -53,6 +53,13 @@ class AdminNavigationController extends AdminController
     }
 
     /**
+     * @return array
+     */
+    public function getTypesName(){
+        return (!isset($this->app->data['app']['settings']['navigation'])) ? [] : $this->app->data['app']['settings']['navigation'];
+    }
+
+    /**
      * @param $id
      * @param $website
      * @return array

@@ -11,6 +11,9 @@
     .navigation-action .nav-header header {
         width: 100%;
     }
+    .navigation-action .cursor{
+        cursor: pointer;
+    }
 </style>
 
 <template>
@@ -32,10 +35,44 @@
             </a>
         </div>
         <div class="section-body">
+            <div class="alert alert-info" role="alert">
+                <strong>Comment ajouter une rubrique à mon menu ?</strong><br/>
+                <p><strong>1.</strong> Choisir le type de lien que vous souhaitez ajouter au menu (page, article, catégorie ...). Pensez à créer d'abord l'élément au préalable</p>
+                <p><strong>2.</strong> Défiler l'élément correspondant au type choisi en cliquant sur la flèche à droite de celui-ci</p>
+                <p><strong>3.</strong> Ensuite choisir ou saisir votre lien</p>
+                <p><strong>4.</strong> Et enfin ajouter votre lien au menu en cliquant sur le bouton "Ajouter"</p>
+            </div>
+
             <form class="form">
 
                 <div class="col-sm-12 col-md-5 col-lg-4">
                     <div class="panel-group" id="menu-item-accordion">
+                        <div class="card panel" v-for="(publication_type, index) in publication_types">
+                            <div class="card-head card-head-sm collapsed" data-toggle="collapse"
+                                 data-parent="#menu-item-accordion" :data-target="'#menu-accordion-' + index"
+                                 aria-expanded="false">
+                                <header>{{publication_type.plural}}</header>
+                                <div class="tools">
+                                    <a class="btn btn-icon-toggle"><i class="fa fa-angle-down"></i></a>
+                                </div>
+                            </div>
+                            <div :id="'menu-accordion-' + index" class="collapse" aria-expanded="false">
+                                <div class="card-body">
+                                    <select2 :launch="true" :multiple="false" @updateValue="updateItem"
+                                             :contents="publication_type.values" :val_index="false" :id="'item-select-' + index"
+                                             index="name"
+                                             label="Lien"></select2>
+                                    <select2 v-if="publication_type.id != 'page' && routes.length > 0 && auth.status.level < 4" :launch="true" :multiple="false"
+                                             @updateValue="updateRoute" :val="('route_id' in publication_type) ? [publication_type.route_id] : []"
+                                             :contents="routes" :id="'route-select-' + index" index="url"
+                                             label="Route"></select2>
+                                    <a @click="addNavBar('menu-accordion-' + index, publication_type.id)"
+                                       class="btn ink-reaction btn-raised btn-lg btn-info pull-right">
+                                        Ajouter
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                         <div class="card panel">
                             <div class="card-head card-head-sm collapsed" data-toggle="collapse"
                                  data-parent="#menu-item-accordion" data-target="#menu-accordion-custom"
@@ -52,7 +89,7 @@
                                         <label for="custom-link">Lien</label>
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" class="form-control link-label" id="custom-link-label">
+                                        <input type="text" v-model="nav_title" class="form-control link-label" id="custom-link-label">
                                         <label for="custom-link-label">Texte du lien</label>
                                     </div>
                                     <a @click="addNavBar('menu-accordion-custom', 'custom')"
@@ -61,38 +98,7 @@
                                     </a>
                                 </div>
                             </div>
-                        </div><!--end .panel -->
-                        <div class="card panel" v-for="(publication_type, index) in publication_types">
-                            <div class="card-head card-head-sm collapsed" data-toggle="collapse"
-                                 data-parent="#menu-item-accordion" :data-target="'#menu-accordion-' + index"
-                                 aria-expanded="false">
-                                <header>{{publication_type.plural}}</header>
-                                <div class="tools">
-                                    <a class="btn btn-icon-toggle"><i class="fa fa-angle-down"></i></a>
-                                </div>
-                            </div>
-                            <div :id="'menu-accordion-' + index" class="collapse" aria-expanded="false">
-                                <div class="card-body">
-                                    <select2 :launch="true" :multiple="false" @updateValue="updateItem"
-                                             :contents="publication_type.values" :id="'item-select-' + index"
-                                             index="name"
-                                             label="Lien"></select2>
-                                    <select2 v-if="publication_type.id != 'page' && routes.length > 0 && auth.status.level < 4" :launch="true" :multiple="false"
-                                             @updateValue="updateRoute" :val="('route_id' in publication_type) ? [publication_type.route_id] : []"
-                                             :contents="routes" :id="'route-select-' + index" index="url"
-                                             label="Route"></select2>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control link-label"
-                                               :id="'type-link-label-' + index">
-                                        <label :for="'type-link-label-' + index">Texte du lien</label>
-                                    </div>
-                                    <a @click="addNavBar('menu-accordion-' + index, publication_type.id)"
-                                       class="btn ink-reaction btn-raised btn-lg btn-info pull-right">
-                                        Ajouter
-                                    </a>
-                                </div>
-                            </div>
-                        </div><!--end .panel -->
+                        </div>
                     </div>
                 </div>
 
@@ -112,7 +118,6 @@
 
                             <p>Glissez chaque élément pour les placer dans l’ordre que vous préférez. Cliquez sur la
                                 flèche à droite de l’élément pour afficher d’autres options de configuration.</p>
-
                             <div class="panel-group" id="menu-accordion-list">
                                 <div class="dd nestable-list">
                                     <navigation-repeater :items="navigation.items"
@@ -126,6 +131,7 @@
                 </div>
             </form>
         </div>
+
     </section>
 </template>
 
@@ -151,6 +157,7 @@
                 },
                 publication_types: [],
                 nav_url: null,
+                nav_title: null,
                 routes: [],
                 nav_route: null
             }
@@ -163,7 +170,8 @@
                 'read', 'update', 'destroy'
             ]),
             updateItem(val){
-                this.nav_url = val;
+                if('id' in val) this.nav_url = val.id;
+                if('name' in val) this.nav_title = val.name;
             },
             updateRoute(val){
                 this.nav_route = val;
@@ -173,11 +181,11 @@
                 let type_id = null;
                 if(this.nav_route == null) this.nav_route = (type in this.publication_types && 'route_id' in this.publication_types[type]) ? this.publication_types[type]['route_id'] : null;
                 let url = this.nav_url;
-                if ($('#' + bloc + ' .link-label').val() != '' && (type == 'custom' || type == 'page' || this.nav_route != null) && this.nav_url != null) {
+                if (this.nav_title != null && (type == 'custom' || type == 'page' || this.nav_route != null) && this.nav_url != null) {
                     (type != 'custom') ? type_id = this.nav_url : this.nav_route = null;
                     let item = {
                         id: 'create-' + this.navigation.items.length,
-                        title: $('#' + bloc + ' .link-label').val(),
+                        title: this.nav_title,
                         url: url,
                         route: {id: this.nav_route},
                         type: type,

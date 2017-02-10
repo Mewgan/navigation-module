@@ -12,6 +12,9 @@ return [
             ],
         ],
         'settings' => [
+            'custom_field_callback' => [
+                'navigation' => '\\Jet\\Modules\\Navigation\\Controllers\\FrontNavigationController@renderField'
+            ],
             'navigation' => [
                 'page' => [
                     'id' => 'page',
