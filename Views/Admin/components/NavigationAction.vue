@@ -38,14 +38,41 @@
             <div class="alert alert-info" role="alert">
                 <strong>Comment ajouter une rubrique à mon menu ?</strong><br/>
                 <p><strong>1.</strong> Choisir le type de lien que vous souhaitez ajouter au menu (page, article, catégorie ...). Pensez à créer d'abord l'élément au préalable</p>
-                <p><strong>2.</strong> Défiler l'élément correspondant au type choisi en cliquant sur la flèche à droite de celui-ci</p>
-                <p><strong>3.</strong> Ensuite choisir ou saisir votre lien</p>
-                <p><strong>4.</strong> Et enfin ajouter votre lien au menu en cliquant sur le bouton "Ajouter"</p>
+                <p><strong>2.</strong> Ensuite choisir ou saisir votre lien</p>
+                <p><strong>3.</strong> Et enfin ajouter votre lien au menu en cliquant sur le bouton "Ajouter"</p>
             </div>
 
             <form class="form">
+                <div class="col-sm-12 col-md-7 col-lg-8">
+                    <div class="card">
+                        <div class="card-head nav-header">
+                            <header>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" v-model="navigation.name"
+                                           placeholder="Nom du menu" id="title">
+                                </div>
+                            </header>
+                        </div>
+                        <!-- BEGIN SEARCH RESULTS -->
+                        <div class="card-body style-primary">
+                            <h2>Structure du menu</h2>
 
+                            <p>Glissez chaque élément pour les placer dans l’ordre que vous préférez. Cliquez sur la
+                                flèche à droite de l’élément pour afficher d’autres options de configuration.</p>
+                            <div class="panel-group" id="menu-accordion-list">
+                                <div class="dd nestable-list">
+                                    <navigation-repeater :items="navigation.items"
+                                                         :navigation_website="navigation.website.id"
+                                                         :publication_types="publication_types"
+                                                         :routes="routes"></navigation-repeater>
+                                </div>
+                            </div><!--end .dd.nestable-list -->
+                        </div>
+                    </div>
+                </div>
                 <div class="col-sm-12 col-md-5 col-lg-4">
+                    <h2 class="text-primary">Liens</h2>
+
                     <div class="panel-group" id="menu-item-accordion">
                         <div class="card panel" v-for="(publication_type, index) in publication_types">
                             <div class="card-head card-head-sm collapsed" data-toggle="collapse"
@@ -61,14 +88,14 @@
                                     <select2 :launch="true" :multiple="false" @updateValue="updateItem"
                                              :contents="publication_type.values" :val_index="false" :id="'item-select-' + index"
                                              index="name"
-                                             label="Lien"></select2>
+                                             :label="publication_type.name"></select2>
                                     <select2 v-if="publication_type.id != 'page' && routes.length > 0 && auth.status.level < 4" :launch="true" :multiple="false"
                                              @updateValue="updateRoute" :val="('route_id' in publication_type) ? [publication_type.route_id] : []"
                                              :contents="routes" :id="'route-select-' + index" index="url"
                                              label="Route"></select2>
                                     <a @click="addNavBar('menu-accordion-' + index, publication_type.id)"
                                        class="btn ink-reaction btn-raised btn-lg btn-info pull-right">
-                                        Ajouter
+                                        Ajouter au menu
                                     </a>
                                 </div>
                             </div>
@@ -94,38 +121,10 @@
                                     </div>
                                     <a @click="addNavBar('menu-accordion-custom', 'custom')"
                                        class="btn ink-reaction btn-raised btn-lg btn-info pull-right">
-                                        Ajouter
+                                        Ajouter au menu
                                     </a>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-12 col-md-7 col-lg-8">
-                    <div class="card">
-                        <div class="card-head nav-header">
-                            <header>
-                                <div class="form-group">
-                                    <input type="text" class="form-control" v-model="navigation.name"
-                                           placeholder="Nom du menu" id="title">
-                                </div>
-                            </header>
-                        </div>
-                        <!-- BEGIN SEARCH RESULTS -->
-                        <div class="card-body style-primary">
-                            <h2>Structure du menu</h2>
-
-                            <p>Glissez chaque élément pour les placer dans l’ordre que vous préférez. Cliquez sur la
-                                flèche à droite de l’élément pour afficher d’autres options de configuration.</p>
-                            <div class="panel-group" id="menu-accordion-list">
-                                <div class="dd nestable-list">
-                                    <navigation-repeater :items="navigation.items"
-                                                         :navigation_website="navigation.website.id"
-                                                         :publication_types="publication_types"
-                                                         :routes="routes"></navigation-repeater>
-                                </div>
-                            </div><!--end .dd.nestable-list -->
                         </div>
                     </div>
                 </div>
@@ -170,8 +169,8 @@
                 'read', 'update', 'destroy'
             ]),
             updateItem(val){
-                if('id' in val) this.nav_url = val.id;
-                if('name' in val) this.nav_title = val.name;
+                if(val.id !== undefined) this.nav_url = val.id;
+                if(val.name !== undefined) this.nav_title = val.name;
             },
             updateRoute(val){
                 this.nav_route = val;
@@ -179,7 +178,7 @@
             addNavBar(bloc, type){
                 let link = '';
                 let type_id = null;
-                if(this.nav_route == null) this.nav_route = (type in this.publication_types && 'route_id' in this.publication_types[type]) ? this.publication_types[type]['route_id'] : null;
+                if(this.nav_route == null) this.nav_route = (this.publication_types[type] !== undefined && this.publication_types[type]['route_id'] !== undefined) ? this.publication_types[type]['route_id'] : null;
                 let url = this.nav_url;
                 if (this.nav_title != null && (type == 'custom' || type == 'page' || this.nav_route != null) && this.nav_url != null) {
                     (type != 'custom') ? type_id = this.nav_url : this.nav_route = null;
@@ -216,7 +215,7 @@
                 })
             },
             deleteNavigation(){
-                if('id' in this.navigation){
+                if(this.navigation.id !== undefined){
                     this.destroy({
                         api: navigation_api.destroy + this.website_id,
                         ids: [this.navigation.id]
@@ -241,7 +240,7 @@
                         type_id: item.type_id,
                         position: key
                     };
-                    if ('children' in el) {
+                    if (el.children !== undefined) {
                         new_items[key]['children'] = this.reorder(el.children, items, new_items[key]['children'])
                     }
                 });
@@ -249,10 +248,10 @@
             },
             getItem(items, id){
                 for(let i = 0; i < items.length; i++){
-                    if('id' in items[i] && items[i]['id'] == id) {
+                    if(items[i]['id'] !== undefined && items[i]['id'] == id) {
                         return items[i];
                     }
-                    else if('children' in items[i] && items[i]['children'].length > 0) {
+                    else if(items[i]['children'] !== undefined && items[i]['children'].length > 0) {
                         let found = this.getItem(items[i]['children'], id);
                         if(found) return found;
                     }
@@ -261,16 +260,16 @@
         },
         created () {
             this.read({api: navigation_api.get_types + this.website_id}).then((response) => {
-                if ('publication_types' in response.data)
+                if (response.data.publication_types !== undefined)
                     this.publication_types = response.data.publication_types;
             }).then(() => {
                 this.read({api: route_api.get_website_routes + this.website_id}).then((response) => {
-                    if ('resource' in response.data)
+                    if (response.data.resource !== undefined)
                         this.routes = response.data.resource;
                 }).then(() => {
                     if (this.navigation_id != 'create') {
                         this.read({api: navigation_api.read + this.navigation_id + '/' + this.website_id}).then((response) => {
-                            if ('resource' in response.data)
+                            if (response.data.resource !== undefined)
                                 this.navigation = response.data.resource;
                         })
                     }

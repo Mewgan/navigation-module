@@ -160,10 +160,10 @@
                 'read', 'destroy'
             ]),
             getIconClass (website) {
-                return (website != null && 'id' in website && this.website_id == website.id) ? 'fa fa-laptop' : 'fa fa-sitemap';
+                return (website != null && website.id !== undefined && this.website_id == website.id) ? 'fa fa-laptop' : 'fa fa-sitemap';
             },
             getIconTitle (content, website) {
-                return (website != null && 'id' in website && this.website_id == website.id) ? content + ' vient du site' : content + ' vient du thème parent';
+                return (website != null && website.id !== undefined && this.website_id == website.id) ? content + ' vient du site' : content + ' vient du thème parent';
             },
             selectNavigation(id){
                 this.selected_items = [id];
@@ -183,7 +183,7 @@
         },
         created () {
             this.read({api: navigation_api.all + this.website_id}).then((response) => {
-                if('resource' in response.data)
+                if(response.data.resource !== undefined)
                     this.navigations = response.data.resource;
             })
         }

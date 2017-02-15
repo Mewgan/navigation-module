@@ -8,10 +8,10 @@
 
 <script type="text/babel">
 
-    import '../../../../../Blocks/AdminBlock/Resources/public/libs/select2/select2.css'
-    import '../../../../../Blocks/AdminBlock/Resources/public/libs/select2/select2.min'
+    import '../../../../../../Blocks/AdminBlock/Resources/public/libs/select2/select2.css'
+    import '../../../../../../Blocks/AdminBlock/Resources/public/libs/select2/select2.min'
 
-    import {navigation_api} from '../api'
+    import {navigation_api} from '../../api'
     import {mapActions} from 'vuex'
 
     export default{
@@ -45,13 +45,13 @@
         },
         created(){
             this.read({api: navigation_api.get_types + this.website_id}).then((response) => {
-                if('publication_types' in response.data){
+                if(response.data.publication_types !== undefined){
                     this.contents = response.data.publication_types;
                 }
             })
         },
         mounted(){
-            if (!('types' in this.field.data)) {
+            if (this.field.data.types === undefined) {
                 this.field.data = {
                     types: []
                 };

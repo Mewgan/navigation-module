@@ -25,13 +25,14 @@
 </template>
 
 <script type="text/babel">
+
     import {mapActions} from 'vuex'
-    import {navigation_api} from '../api'
+    import {navigation_api} from '../../api'
 
     export default{
         name: 'navigation-custom-field',
         components: {
-            Select2: resolve => require(['../../../../../Blocks/AdminBlock/Front/components/Helper/Select2.vue'], resolve),
+            Select2: resolve => require(['../../../../../../Blocks/AdminBlock/Front/components/Helper/Select2.vue'], resolve),
         },
         props: {
             field: {
@@ -61,7 +62,7 @@
             })
         },
         mounted(){
-            if (!('tyoes' in this.field.data)) {
+            if (this.field.data.types === undefined) {
                 this.field.data = {
                     types: []
                 };

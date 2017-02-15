@@ -1,6 +1,6 @@
 <template>
     <div class="navigation-module">
-        <form class="form" >
+        <form class="form">
             <h5 class="module-title">Information :</h5>
             <div class="row">
                 <div class="col-md-6">
@@ -33,12 +33,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group" >
+                <div class="form-group">
                     <input type="text" class="form-control" v-model="content_data.class" :id="'content-class-' + line">
                     <label :for="'content-class-' + line">Class</label>
                 </div>
                 <h5 class="module-title">Choix du template :</h5>
-                <template-editor :id="line" :templates="templates" :template="content.template" label="Template du contenu"></template-editor>
+                <template-editor :id="line" :templates="templates" :template="content.template"
+                                 label="Template du contenu"></template-editor>
             </div>
             <div>
                 <h5 class="module-title">Choix du menu :</h5>
@@ -53,7 +54,8 @@
 
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
-            <button type="button" @click="updateContent" class="btn btn-primary" data-dismiss="modal">Enregistrer</button>
+            <button type="button" @click="updateContent" class="btn btn-primary" data-dismiss="modal">Enregistrer
+            </button>
         </div>
 
     </div>
@@ -61,20 +63,20 @@
 
 <script type="text/babel">
 
-    import TemplateEditor from '../../../../../Blocks/AdminBlock/Front/components/Helper/TemplateEditor.vue'
-
     import {mapGetters, mapActions} from 'vuex'
 
-    import {template_api} from '../../../../../Blocks/AdminBlock/Front/api'
-    import {navigation_api} from '../api'
+    import {template_api} from '../../../../../../Blocks/AdminBlock/Front/api'
+    import {navigation_api} from '../../api'
 
     export default
     {
         name: 'navigation',
-        components: {TemplateEditor},
+        components: {
+            TemplateEditor: resolve => require(['../../../../../../Blocks/AdminBlock/Front/components/Helper/TemplateEditor.vue'], resolve),
+        },
         props: {
             line: {
-                default: '0'
+                default: 'default'
             },
             content: {
                 type: Object,
@@ -107,14 +109,10 @@
             }
         },
         computed: {
-            ...mapGetters([
-                'auth'
-            ])
+            ...mapGetters(['auth'])
         },
         methods: {
-            ...mapActions([
-                'read'
-            ]),
+            ...mapActions(['read']),
             updateContent(){
                 this.$emit('updateContent', this.content);
             }
@@ -124,9 +122,9 @@
                 this.templates = response.data;
             });
             this.read({api: navigation_api.all + this.website_id}).then((response) => {
-                if ('resource' in response.data) {
+                if (response.data.resource !== undefined) {
                     this.navigations = response.data.resource;
-                    if ('navigation' in this.content.data)this.content_data = this.content.data;
+                    if (this.content.data.navigation !== undefined)this.content_data = this.content.data;
                 }
             })
         }

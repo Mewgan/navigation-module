@@ -1,19 +1,12 @@
 <style>
     .nav-list .setup-bar, .dd-list .setup-bar {
-        width: 90%;
+        width: 100%;
     }
     .nav-list .setup-bar .tools i, .dd-list .setup-bar .tools i{
         margin: 0;
     }
     .nav-list .nav-bar span{
         text-transform: lowercase;
-    }
-    .nav-list .delete-item , .dd-list .delete-item {
-        padding: 5px 10px 5px;
-        position: absolute;
-        top: 7px;
-        right: 0;
-        padding-left: 13px !important;
     }
     .nav-list button, .dd-list button {
         color: black;
@@ -48,7 +41,7 @@
     <ol class="dd-list nav-list">
         <li v-for="(item, index) in items" class="dd-item list-group"
             :data-id="item.id">
-            <div class="dd-handle btn btn-default-light"></div>
+            <div class="dd-handle btn btn-default-light"><i class="fa fa-arrows"></i></div>
             <div class="btn setup-bar btn-default-light">
                 <div class="card panel">
                     <div class="card-head card-head-sm collapsed">
@@ -56,11 +49,13 @@
                                        class="form-control"></header>
                         <div class="tools">
                             <em v-show="auth.status.level < 4">{{item.type}} </em>
-                            <a class="btn btn-warning" data-toggle="collapse"
+                            <a class="btn btn-default" data-toggle="collapse"
                                :data-parent="accordion_parent"
                                :data-target="'#item-accordion-' + item.id"
                                aria-expanded="false"><i
                                     class="fa fa-pencil"></i></a>
+                            <a @click="deleteItem(index, item.id)" class="btn delete-item btn-danger"><i
+                                    class="fa fa-trash"></i></a>
                         </div>
                     </div>
                     <div :id="'item-accordion-' + item.id" class="collapse nav-bar"
@@ -92,8 +87,6 @@
                     </div>
                 </div>
             </div>
-            <a @click="deleteItem(index, item.id)" class="btn delete-item btn-danger"><i
-                    class="fa fa-trash"></i></a>
             <navigation-repeater v-if="'children' in item && item.children.length > 0" :items="item.children"
                                  :accordion_parent="accordion_parent" :publication_types="publication_types"
                                  :routes="routes" :nestableClass="nestableClass" :navigation_website="navigation_website"></navigation-repeater>
@@ -144,7 +137,7 @@
                 'destroy'
             ]),
             getNavigationTypes(type){
-                return (type in this.publication_types && 'values' in this.publication_types[type]) ? this.publication_types[type]['values'] : [];
+                return (this.publication_types[type] !== undefined && this.publication_types[type]['values'] !== undefined) ? this.publication_types[type]['values'] : [];
             },
             updateUrl(val, oldVal){
                 let index = this.items.findIndex((key) => key.type_id == oldVal);

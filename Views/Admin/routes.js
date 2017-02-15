@@ -1,4 +1,3 @@
-
 export var routes = [
     {
         path: 'navigation',
@@ -12,14 +11,13 @@ export var routes = [
     }
 ];
 
-
 export var content_routes = {
-    navigation:  (resolve) => { require(['./components/NavigationModule.vue'],resolve)}
+    navigation:  (resolve) => { require(['./components/Module/NavigationModule.vue'],resolve)}
 };
 
 export var field_routes = {
-    navigationCustomField: (resolve) => { require(['./components/NavigationCustomField.vue'],resolve) },
-    navigationRenderCustomField: (resolve) => { require(['./components/NavigationRenderCustomField.vue'],resolve) },
+    navigationCustomField: (resolve) => { require(['./components/CustomField/NavigationCustomField.vue'],resolve) },
+    navigationRenderCustomField: (resolve) => { require(['./components/CustomField/NavigationRenderCustomField.vue'],resolve) },
 };
 
 export default {
