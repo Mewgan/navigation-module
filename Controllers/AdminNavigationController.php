@@ -10,6 +10,7 @@ use Jet\Modules\Navigation\Models\NavigationItem;
 use Jet\Modules\Navigation\Requests\NavigationItemRequest;
 use Jet\Modules\Navigation\Requests\NavigationRequest;
 use Jet\Services\Auth;
+use JetFire\Framework\Providers\EventProvider;
 
 /**
  * Class AdminNavigationController
@@ -83,11 +84,12 @@ class AdminNavigationController extends AdminController
     /**
      * @param NavigationRequest $request
      * @param NavigationItemRequest $item_request
+     * @param EventProvider $event
      * @param $website
      * @param $id
      * @return array|bool
      */
-    public function updateOrCreate(NavigationRequest $request, NavigationItemRequest $item_request, $website, $id)
+    public function updateOrCreate(NavigationRequest $request, NavigationItemRequest $item_request, EventProvider $event, $website, $id)
     {
         if ($request->method() == 'PUT' || $request->method() == 'POST') {
             $response = $request->validate();
@@ -124,7 +126,7 @@ class AdminNavigationController extends AdminController
                     if (is_array($response)) return $response;
 
                     if(Navigation::watchAndSave($navigation)){
-                        $this->app->emit('updateNavigation', [$navigation->getId()]);
+                        $event->emit('updateNavigation', [$navigation->getId()]);
                         if($replace){
                             $website = $navigation->getWebsite();
                             $data = $this->replaceData($website->getData(), 'navigations', $id, $navigation->getId());
