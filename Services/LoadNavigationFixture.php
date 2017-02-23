@@ -65,7 +65,7 @@ trait LoadNavigationFixture
             /** @var Website $website */
             $website = ($this->hasReference($item['website'])) ? $this->getReference($item['website']) : Website::findOneByDomain($item['website']);
             /** @var Navigation $navigation */
-            $navigation = ($this->hasReference($item['navigation'])) ? $this->getReference($item['navigation']) : Navigation::findOneBy(['name' => $item['navigation'], 'website' => $website]);;
+            $navigation = ($this->hasReference($item['navigation'])) ? $this->getReference($item['navigation']) : Navigation::findOneBy(['name' => $item['navigation'], 'website' => $website]);
             
             $navigationItem = (NavigationItem::where('title', $item['title'])->where('navigation', $navigation)->count() == 0)
                 ? new NavigationItem()
