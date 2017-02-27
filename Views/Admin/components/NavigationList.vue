@@ -56,7 +56,7 @@
                                                     </label>
                                                 </div>
                                             </th>
-                                            <th>Scope</th>
+                                            <th v-show="auth.status.level < 4">Scope</th>
                                             <th>Nom</th>
                                             <th>Action</th>
                                         </tr>
@@ -75,7 +75,7 @@
                                                     </label>
                                                 </div>
                                             </td>
-                                            <td>
+                                            <td v-show="auth.status.level < 4">
                                                 <span class="post-icon"><i
                                                         :title="getIconTitle('Ce menu',navigation.website)"
                                                         :class="getIconClass(navigation.website)"></i> </span>
@@ -127,7 +127,7 @@
 
 <script type="text/babel">
 
-    import {mapActions} from 'vuex'
+    import {mapGetters, mapActions} from 'vuex'
     import {navigation_api} from '../api'
 
     export default
@@ -140,6 +140,7 @@
             }
         },
         computed: {
+            ...mapGetters(['auth']),
             selectAll: {
                 get: function () {
                     return this.navigations ? this.selected_items.length == this.navigations.length : false;
