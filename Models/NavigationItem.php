@@ -3,7 +3,6 @@
 namespace Jet\Modules\Navigation\Models;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Jet\Models\Route;
 use JetFire\Db\Model;
 
 /**

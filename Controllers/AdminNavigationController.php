@@ -26,7 +26,7 @@ class AdminNavigationController extends AdminController
     public function all($website)
     {
         if (!$this->getWebsite($website)) return ['status' => 'error', 'Impossible de trouver le site web'];
-        return ['resource' => Navigation::repo()->listAll($this->websites, $this->website->getData())];
+        return ['resource' => Navigation::repo()->listAll($this->websites, $this->getWebsiteData($this->website))];
     }
 
     /**
@@ -35,7 +35,7 @@ class AdminNavigationController extends AdminController
      */
     public function getTypes($website)
     {
-        if(!$this->getWebsite($website))return ['status' => 'error', 'message' => 'Impossible de trouver le site'];
+        if (!$this->getWebsite($website)) return ['status' => 'error', 'message' => 'Impossible de trouver le site'];
 
         $navigation = (!isset($this->app->data['app']['settings']['navigation'])) ? [] : $this->app->data['app']['settings']['navigation'];
         foreach ($navigation as $key => $type) {
@@ -45,9 +45,9 @@ class AdminNavigationController extends AdminController
             if (!isset($value['resource'])) return $value;
             $navigation[$key]['values'] = $value['resource'];
 
-            if(isset($type['route'])){
-                $route = Route::repo()->getRouteByName($type['route'], $this->websites, $this->website->getData());
-                if(!is_null($route))$navigation[$key]['route_id'] = $route['id'];
+            if (isset($type['route'])) {
+                $route = Route::repo()->getRouteByName($type['route'], $this->websites, $this->getWebsiteData($this->website));
+                if (!is_null($route)) $navigation[$key]['route_id'] = $route['id'];
             }
         }
         return ['publication_types' => $navigation];
@@ -56,7 +56,8 @@ class AdminNavigationController extends AdminController
     /**
      * @return array
      */
-    public function getTypesName(){
+    public function getTypesName()
+    {
         return (!isset($this->app->data['app']['settings']['navigation'])) ? [] : $this->app->data['app']['settings']['navigation'];
     }
 
@@ -72,9 +73,10 @@ class AdminNavigationController extends AdminController
         if (!is_null($navigation)) {
             $website_id = $navigation->getWebsite()->getId();
             if ($this->getWebsite($website) && in_array($website_id, $this->websites)) {
-                if (isset($this->website->getData()['parent_exclude']['navigations']) && in_array($website_id, $this->website->getData()['parent_exclude']['navigations']))
+                $data = $this->getWebsiteData($this->website);
+                if (isset($data['parent_exclude']['navigations']) && in_array($navigation->getId(), $data['parent_exclude']['navigations']))
                     return ['status' => 'error', 'Le menu n\'existe pas'];
-                return ['resource' => Navigation::repo()->read($id, ['websites' => $this->websites, 'exclude' => $this->website->getData()])];
+                return ['resource' => Navigation::repo()->read($id, ['websites' => $this->websites, 'options' => $this->getWebsiteData($this->website)])];
             }
             return ['status' => 'error', 'Impossible de trouver le site web'];
         }
@@ -110,7 +112,7 @@ class AdminNavigationController extends AdminController
                 if (!is_null($navigation)) {
 
                     if ($nav_website != $website && $id != 'create') {
-                        $data = $this->excludeData($website->getData(),'navigations',$navigation->getId());
+                        $data = $this->excludeData($website->getData(), 'navigations', $navigation->getId());
                         $website->setData($data);
                         Website::watch($website);
                         $navigation = new Navigation();
@@ -125,9 +127,9 @@ class AdminNavigationController extends AdminController
 
                     if (is_array($response)) return $response;
 
-                    if(Navigation::watchAndSave($navigation)){
+                    if (Navigation::watchAndSave($navigation)) {
                         $event->emit('updateNavigation', [$navigation->getId()]);
-                        if($replace){
+                        if ($replace) {
                             $website = $navigation->getWebsite();
                             $data = $this->replaceData($website->getData(), 'navigations', $id, $navigation->getId());
                             $website->setData($data);
@@ -191,17 +193,17 @@ class AdminNavigationController extends AdminController
                 $navigation_types = $this->app->data['app']['settings']['navigation'];
                 if (isset($navigation_types[$value['type']])) {
                     $callback = explode('@', $navigation_types[$value['type']]['get_url']);
-                    if($value['type'] == 'page'){
+                    if ($value['type'] == 'page') {
                         $route = $this->callMethod($callback[0], $callback[1], ['id' => $value['type_id']]);
-                        if(is_array($route)) return $route;
+                        if (is_array($route)) return $route;
                         $value['route'] = $route;
                         $value['url'] = $route->getUrl();
-                    }else{
-                        if(empty($value['route']) || !isset($value['route']['id']) || empty($value['route']['id']))
-                            return ['status' => 'error', 'message' => 'La route n\'est pas définie pour :'. $value['title']];
+                    } else {
+                        if (empty($value['route']) || !isset($value['route']['id']) || empty($value['route']['id']))
+                            return ['status' => 'error', 'message' => 'La route n\'est pas définie pour :' . $value['title']];
                         $value['route'] = Route::findOneById($value['route']['id']);
                         if (is_null($value['route'])) return ['status' => 'error', 'message' => 'Impossible de trouver la route'];
-                        $value['url'] =  $this->callMethod($callback[0], $callback[1], ['url' => $value['route']->getUrl(), 'id' => $value['type_id']]);
+                        $value['url'] = $this->callMethod($callback[0], $callback[1], ['url' => $value['route']->getUrl(), 'id' => $value['type_id']]);
                         if (is_array($value['url'])) return $value['url'];
                     }
                     $item->setRoute($value['route']);
@@ -230,11 +232,12 @@ class AdminNavigationController extends AdminController
     public function delete(NavigationRequest $request, Auth $auth, $website)
     {
         if ($request->method() == 'DELETE' && $request->exists('ids')) {
+            /** @var Website $website */
             $website = Website::findOneById($website);
             if (is_null($website)) return ['status' => 'error', 'message' => 'Impossible de trouver le site web'];
             $data = $website->getData();
 
-            if(!$this->isWebsiteOwner($auth, $website->getId()))
+            if (!$this->isWebsiteOwner($auth, $website->getId()))
                 return ['status' => 'error', 'message' => 'Vous n\'avez pas les permission pour supprimer ces catégories'];
 
             $navigations = Navigation::repo()->findById($request->get('ids'));
@@ -267,7 +270,7 @@ class AdminNavigationController extends AdminController
     {
         if ($request->method() == 'DELETE' && $request->exists('ids')) {
 
-            if(!$this->isWebsiteOwner($auth, $website))
+            if (!$this->isWebsiteOwner($auth, $website))
                 return ['status' => 'error', 'message' => 'Vous n\'avez pas les permission pour supprimer ces catégories'];
 
             $items = Navigation::repo()->findItemsById($request->get('ids'));
