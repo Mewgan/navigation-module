@@ -36,7 +36,7 @@
         </div>
         <div class="section-body">
             <div class="alert alert-info" role="alert">
-                <strong>Comment ajouter une rubrique à mon menu ?</strong><br/>
+                <strong><i class="fa fa-info-circle"></i> Comment ajouter une rubrique à mon menu ?</strong><br/>
                 <p><strong>1.</strong> Choisir le type de lien que vous souhaitez ajouter au menu (page, article, catégorie ...). Pensez à créer d'abord l'élément au préalable</p>
                 <p><strong>2.</strong> Ensuite choisir ou saisir votre lien</p>
                 <p><strong>3.</strong> Et enfin ajouter votre lien au menu en cliquant sur le bouton "Ajouter"</p>
