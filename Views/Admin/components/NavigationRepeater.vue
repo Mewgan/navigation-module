@@ -96,7 +96,7 @@
 
 <script type="text/babel">
 
-    import Select2 from '../../../../../Blocks/AdminBlock/Front/components/Helper/Select2.vue'
+    import Select2 from '@front/components/Helper/Select2.vue'
 
     import {mapGetters, mapActions} from 'vuex'
     import {navigation_api} from '../api'
@@ -130,7 +130,7 @@
             }
         },
         computed: {
-            ...mapGetters(['auth']),
+            ...mapGetters(['auth'])
         },
         methods: {
             ...mapActions([

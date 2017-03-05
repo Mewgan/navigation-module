@@ -65,14 +65,14 @@
 
     import {mapGetters, mapActions} from 'vuex'
 
-    import {template_api} from '../../../../../../Blocks/AdminBlock/Front/api'
+    import {template_api} from '@front/api'
     import {navigation_api} from '../../api'
 
     export default
     {
         name: 'navigation',
         components: {
-            TemplateEditor: resolve => require(['../../../../../../Blocks/AdminBlock/Front/components/Helper/TemplateEditor.vue'], resolve),
+            TemplateEditor: resolve => { require(['@front/components/Helper/TemplateEditor.vue'], resolve) }
         },
         props: {
             line: {

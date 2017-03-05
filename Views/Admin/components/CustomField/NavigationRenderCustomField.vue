@@ -8,8 +8,8 @@
 
 <script type="text/babel">
 
-    import '../../../../../../Blocks/AdminBlock/Resources/public/libs/select2/select2.css'
-    import '../../../../../../Blocks/AdminBlock/Resources/public/libs/select2/select2.min'
+    import '@admin/libs/select2/select2.css'
+    import '@admin/libs/select2/select2.min'
 
     import {navigation_api} from '../../api'
     import {mapActions} from 'vuex'

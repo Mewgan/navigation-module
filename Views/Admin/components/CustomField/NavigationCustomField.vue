@@ -32,7 +32,7 @@
     export default{
         name: 'navigation-custom-field',
         components: {
-            Select2: resolve => require(['../../../../../../Blocks/AdminBlock/Front/components/Helper/Select2.vue'], resolve),
+            Select2: resolve => { require(['@front/components/Helper/Select2.vue'], resolve) }
         },
         props: {
             field: {

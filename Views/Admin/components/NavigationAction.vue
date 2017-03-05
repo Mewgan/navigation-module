@@ -135,12 +135,12 @@
 </template>
 
 <script type="text/babel">
-    import '../../../../../Blocks/AdminBlock/Resources/public/libs/nestable/nestable.css'
-    import '../../../../../Blocks/AdminBlock/Resources/public/libs/nestable/jquery.nestable'
-    import Select2 from '../../../../../Blocks/AdminBlock/Front/components/Helper/Select2.vue'
+    import '@admin/libs/nestable/nestable.css'
+    import '@admin/libs/nestable/jquery.nestable'
+    import Select2 from '@front/components/Helper/Select2.vue'
     import NavigationRepeater from './NavigationRepeater.vue'
     import {mapGetters, mapActions} from 'vuex'
-    import {route_api} from '../../../../../Blocks/AdminBlock/Front/api'
+    import {route_api} from '@front/api'
     import {navigation_api} from '../api'
     export default
     {
@@ -162,7 +162,7 @@
             }
         },
         computed: {
-            ...mapGetters(['auth']),
+            ...mapGetters(['auth'])
         },
         methods: {
             ...mapActions([
