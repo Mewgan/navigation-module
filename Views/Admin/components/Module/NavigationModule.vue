@@ -54,8 +54,7 @@
 
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
-            <button type="button" @click="updateContent" class="btn btn-primary" data-dismiss="modal">Enregistrer
-            </button>
+            <button type="button" @click="updateContent" class="btn btn-primary">Enregistrer</button>
         </div>
 
     </div>
@@ -68,12 +67,15 @@
     import {template_api} from '@front/api'
     import {navigation_api} from '../../api'
 
+    import module_mixin from '@front/mixin/module'
+
     export default
     {
         name: 'navigation',
         components: {
             TemplateEditor: resolve => { require(['@front/components/Helper/TemplateEditor.vue'], resolve) }
         },
+        mixins: [module_mixin],
         props: {
             line: {
                 default: 'default'
@@ -112,10 +114,19 @@
             ...mapGetters(['auth'])
         },
         methods: {
-            ...mapActions(['read']),
+            ...mapActions(['read', 'setResponse']),
             updateContent(){
-                this.$emit('updateContent', this.content);
-            }
+                if (
+                    this.content.template.id !== undefined &&
+                    this.content.template.id != '' &&
+                    this.content.data.navigation !== undefined &&
+                    this.content.data.navigation != ''
+                ) {
+                    this.$emit('updateContent', this.content);
+                    this.closeModal();
+                } else
+                    this.setResponse({status: 'error', message: 'Veuillez choisir le template et/ou le menu à afficher'});
+            },
         },
         created(){
             this.read({api: template_api.get_website_content_layouts + this.website}).then((response) => {
