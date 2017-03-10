@@ -18,6 +18,7 @@
 
 <template>
     <section class="navigation-action">
+
         <div class="section-header">
             <ol class="breadcrumb">
                 <li>
@@ -30,11 +31,14 @@
             <a @click="updateOrCreate" class="btn ink-reaction btn-raised btn-lg btn-primary pull-right">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Sauvegarder
             </a>
-            <a class="btn ink-reaction btn-raised btn-lg btn-danger pull-right">
+            <a data-toggle="modal"
+               data-target="#deleteNavigationModal" class="btn ink-reaction btn-raised btn-lg btn-danger pull-right">
                 <i class="fa fa-trash" aria-hidden="true"></i> Supprimer
             </a>
         </div>
+
         <div class="section-body">
+
             <div class="alert alert-info" role="alert">
                 <strong><i class="fa fa-info-circle"></i> Comment ajouter une rubrique à mon menu ?</strong><br/>
                 <p><strong>1.</strong> Choisir le type de lien que vous souhaitez ajouter au menu (page, article, catégorie ...). Pensez à créer d'abord l'élément au préalable</p>
@@ -43,6 +47,7 @@
             </div>
 
             <form class="form">
+
                 <div class="col-sm-12 col-md-7 col-lg-8">
                     <div class="card">
                         <div class="card-head nav-header">
@@ -70,6 +75,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="col-sm-12 col-md-5 col-lg-4">
                     <h2 class="text-primary">Liens</h2>
 
@@ -129,9 +135,29 @@
                     </div>
                 </div>
             </form>
+
+        </div>
+
+        <div class="modal fade" id="deleteNavigationModal" tabindex="-1" role="dialog" aria-labelledby="simpleModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="deleteNavigationModalLabel">Suppression</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Êtes-vous sûr de vouloir supprimer définitivement le menu sélectionné(s) ?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" @click="deleteNavigation()">Oui</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
         </div>
 
     </section>
+
 </template>
 
 <script type="text/babel">
@@ -206,9 +232,9 @@
                         items: new_items
                     }
                 }).then((response) => {
-                    if (response.data.status == 'success'){
-                        if(this.navigation_id == 'create')
-                            this.$router.push({name: 'module:navigation:action', params: {website_id: this.website_id, navigation_id: response.data.resource.id}});
+                    if (response.data.resource !== undefined){
+                        if(this.navigation_id != response.data.resource.id)
+                            this.$router.replace({name: 'module:navigation:action', params: {website_id: this.website_id, navigation_id: response.data.resource.id}});
                         else
                             this.navigation = response.data.resource;
                     }
@@ -221,7 +247,7 @@
                         ids: [this.navigation.id]
                     }).then((response) => {
                         if (response.data.status == 'success') {
-                            this.$router.push({name: 'module:navigation', params: {website_id: this.website_id}})
+                            this.$router.replace({name: 'module:navigation', params: {website_id: this.website_id}})
                         }
                     });
                 }
