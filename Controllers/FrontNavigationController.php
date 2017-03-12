@@ -3,6 +3,7 @@
 namespace Jet\Modules\Navigation\Controllers;
 
 use Jet\FrontBlock\Controllers\MainController;
+use Jet\Models\Content;
 use Jet\Models\Route;
 use Jet\Models\Website;
 use Jet\Modules\Navigation\Models\Navigation;
@@ -12,7 +13,7 @@ class FrontNavigationController extends MainController
 
     /**
      * @param Website $website
-     * @param $content
+     * @param Content $content
      * @return null
      */
     public function show(Website $website, $content)

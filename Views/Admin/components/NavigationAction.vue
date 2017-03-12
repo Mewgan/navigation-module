@@ -2,16 +2,20 @@
     .navigation-action .section-header {
         margin-bottom: 20px;
     }
+
     .navigation-action .section-header ol {
         float: left;
     }
+
     .navigation-action > .section-header > a {
         margin-left: 10px;
     }
+
     .navigation-action .nav-header header {
         width: 100%;
     }
-    .navigation-action .cursor{
+
+    .navigation-action .cursor {
         cursor: pointer;
     }
 </style>
@@ -40,8 +44,9 @@
         <div class="section-body">
 
             <div class="alert alert-info" role="alert">
-                <strong><i class="fa fa-info-circle"></i> Comment ajouter une rubrique à mon menu ?</strong><br/>
-                <p><strong>1.</strong> Choisir le type de lien que vous souhaitez ajouter au menu (page, article, catégorie ...). Pensez à créer d'abord l'élément au préalable</p>
+                <strong><i class="fa fa-info-circle"></i> Comment ajouter une rubrique à mon menu ?</strong>
+                <p><strong>1.</strong> Choisir le type de lien que vous souhaitez ajouter au menu (page, article,
+                    catégorie ...). Pensez à créer d'abord l'élément au préalable</p>
                 <p><strong>2.</strong> Ensuite choisir ou saisir votre lien</p>
                 <p><strong>3.</strong> Et enfin ajouter votre lien au menu en cliquant sur le bouton "Ajouter"</p>
             </div>
@@ -66,10 +71,14 @@
                                 flèche à droite de l’élément pour afficher d’autres options de configuration.</p>
                             <div class="panel-group" id="menu-accordion-list">
                                 <div class="dd nestable-list">
-                                    <navigation-repeater :items="navigation.items"
-                                                         :navigation_website="navigation.website.id"
-                                                         :publication_types="publication_types"
-                                                         :routes="routes"></navigation-repeater>
+                                    <ol class="dd-list nav-list">
+                                        <navbar v-for="(item, index) in navigation.items" :key="item.id" :item="item"
+                                                @deleteItem="deleteNavBar"
+                                                :navigation_website="navigation.website.id"
+                                                :publication_types="publication_types"
+                                                :routes="routes"
+                                                :website_id="website_id"></navbar>
+                                    </ol>
                                 </div>
                             </div><!--end .dd.nestable-list -->
                         </div>
@@ -80,6 +89,7 @@
                     <h2 class="text-primary">Liens</h2>
 
                     <div class="panel-group" id="menu-item-accordion">
+
                         <div class="card panel" v-for="(publication_type, index) in publication_types">
                             <div class="card-head card-head-sm collapsed" data-toggle="collapse"
                                  data-parent="#menu-item-accordion" :data-target="'#menu-accordion-' + index"
@@ -92,20 +102,25 @@
                             <div :id="'menu-accordion-' + index" class="collapse" aria-expanded="false">
                                 <div class="card-body">
                                     <select2 :launch="true" :multiple="false" @updateValue="updateItem"
-                                             :contents="publication_type.values" :val_index="false" :id="'item-select-' + index"
+                                             :contents="publication_type.values" :val_index="false"
+                                             :id="'item-select-' + index"
                                              index="name"
                                              :label="publication_type.name"></select2>
-                                    <select2 v-if="publication_type.id != 'page' && routes.length > 0 && auth.status.level < 4" :launch="true" :multiple="false"
-                                             @updateValue="updateRoute" :val="('route_id' in publication_type) ? [publication_type.route_id] : []"
-                                             :contents="routes" :id="'route-select-' + index" index="url"
-                                             label="Route"></select2>
-                                    <a @click="addNavBar('menu-accordion-' + index, publication_type.id)"
+                                    <select2
+                                            v-if="publication_type.id != 'page' && routes.length > 0 && auth.status.level < 4"
+                                            :launch="true" :multiple="false"
+                                            @updateValue="updateRoute"
+                                            :val="('route_id' in publication_type) ? [publication_type.route_id] : []"
+                                            :contents="routes" :id="'route-select-' + index" index="url"
+                                            label="Route"></select2>
+                                    <a @click="addNavBar(publication_type.id)"
                                        class="btn ink-reaction btn-raised btn-lg btn-info pull-right">
                                         Ajouter au menu
                                     </a>
                                 </div>
                             </div>
                         </div>
+
                         <div class="card panel">
                             <div class="card-head card-head-sm collapsed" data-toggle="collapse"
                                  data-parent="#menu-item-accordion" data-target="#menu-accordion-custom"
@@ -122,10 +137,11 @@
                                         <label for="custom-link">Lien</label>
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" v-model="nav_title" class="form-control link-label" id="custom-link-label">
+                                        <input type="text" v-model="nav_title" class="form-control link-label"
+                                               id="custom-link-label">
                                         <label for="custom-link-label">Texte du lien</label>
                                     </div>
-                                    <a @click="addNavBar('menu-accordion-custom', 'custom')"
+                                    <a @click="addNavBar('custom')"
                                        class="btn ink-reaction btn-raised btn-lg btn-info pull-right">
                                         Ajouter au menu
                                     </a>
@@ -138,7 +154,8 @@
 
         </div>
 
-        <div class="modal fade" id="deleteNavigationModal" tabindex="-1" role="dialog" aria-labelledby="simpleModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal fade" id="deleteNavigationModal" tabindex="-1" role="dialog"
+             aria-labelledby="simpleModalLabel" aria-hidden="true" style="display: none;">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -150,7 +167,9 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" @click="deleteNavigation()">Oui</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" @click="deleteNavigation()">
+                            Oui
+                        </button>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
@@ -163,14 +182,21 @@
 <script type="text/babel">
     import '@admin/libs/nestable/nestable.css'
     import '@admin/libs/nestable/jquery.nestable'
-    import Select2 from '@front/components/Helper/Select2.vue'
-    import NavigationRepeater from './NavigationRepeater.vue'
+
     import {mapGetters, mapActions} from 'vuex'
     import {route_api} from '@front/api'
     import {navigation_api} from '../api'
+
     export default
     {
-        components: {Select2, NavigationRepeater},
+        components: {
+            Select2: resolve => {
+                require(['@front/components/Helper/Select2.vue'], resolve)
+            },
+            Navbar: resolve => {
+                require(['./Navbar.vue'], resolve)
+            }
+        },
         data () {
             return {
                 website_id: this.$route.params.website_id,
@@ -195,16 +221,15 @@
                 'read', 'update', 'destroy'
             ]),
             updateItem(val){
-                if(val.id !== undefined) this.nav_url = val.id;
-                if(val.name !== undefined) this.nav_title = val.name;
+                if (val.id !== undefined) this.nav_url = val.id;
+                if (val.name !== undefined) this.nav_title = val.name;
             },
             updateRoute(val){
                 this.nav_route = val;
             },
-            addNavBar(bloc, type){
-                let link = '';
+            addNavBar(type){
                 let type_id = null;
-                if(this.nav_route == null) this.nav_route = (this.publication_types[type] !== undefined && this.publication_types[type]['route_id'] !== undefined) ? this.publication_types[type]['route_id'] : null;
+                if (this.nav_route == null) this.nav_route = (this.publication_types[type] !== undefined && this.publication_types[type]['route_id'] !== undefined) ? this.publication_types[type]['route_id'] : null;
                 let url = this.nav_url;
                 if (this.nav_title != null && (type == 'custom' || type == 'page' || this.nav_route != null) && this.nav_url != null) {
                     (type != 'custom') ? type_id = this.nav_url : this.nav_route = null;
@@ -222,26 +247,35 @@
                     this.navigation.items.push(item);
                 }
             },
+            deleteNavBar(id){
+                let index = this.navigation.items.findIndex((i) => i.id == id);
+                this.navigation.items.splice(index, 1);
+            },
             updateOrCreate(){
                 let navs = $('.nestable-list').nestable('serialize');
-                let new_items = this.reorder(navs, this.navigation.items, []);
+                this.navigation.items = this.reorder(navs, this.navigation.items, []);
+
                 this.update({
                     api: navigation_api.update_or_create + this.website_id + '/' + this.navigation_id,
                     value: {
                         name: this.navigation.name,
-                        items: new_items
+                        items: this.navigation.items
                     }
                 }).then((response) => {
-                    if (response.data.resource !== undefined){
-                        if(this.navigation_id != response.data.resource.id)
-                            this.$router.replace({name: 'module:navigation:action', params: {website_id: this.website_id, navigation_id: response.data.resource.id}});
-                        else
-                            this.navigation = response.data.resource;
+                    if (response.data.resource !== undefined) {
+                        this.navigation = response.data.resource;
+                        if (this.navigation_id != response.data.resource.id) {
+                            this.$router.replace({
+                                name: 'module:navigation:action',
+                                params: {website_id: this.website_id, navigation_id: response.data.resource.id}
+                            });
+                        }
+                        this.navigation_id = (this.navigation.id !== undefined) ? this.navigation.id : 'create';
                     }
                 })
             },
             deleteNavigation(){
-                if(this.navigation.id !== undefined){
+                if (this.navigation.id !== undefined) {
                     this.destroy({
                         api: navigation_api.destroy + this.website_id,
                         ids: [this.navigation.id]
@@ -273,13 +307,13 @@
                 return new_items;
             },
             getItem(items, id){
-                for(let i = 0; i < items.length; i++){
-                    if(items[i]['id'] !== undefined && items[i]['id'] == id) {
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i]['id'] !== undefined && items[i]['id'] == id) {
                         return items[i];
                     }
-                    else if(items[i]['children'] !== undefined && items[i]['children'].length > 0) {
+                    else if (items[i]['children'] !== undefined && items[i]['children'].length > 0) {
                         let found = this.getItem(items[i]['children'], id);
-                        if(found) return found;
+                        if (found) return found;
                     }
                 }
             }
@@ -295,18 +329,17 @@
                 }).then(() => {
                     if (this.navigation_id != 'create') {
                         this.read({api: navigation_api.read + this.navigation_id + '/' + this.website_id}).then((response) => {
-                            if (response.data.resource !== undefined)
+                            if (response.data.resource !== undefined) {
                                 this.navigation = response.data.resource;
+                            }
                         })
                     }
                 });
             });
         },
         mounted(){
-            this.$nextTick(function () {
-                $('.nestable-list').nestable({
-                    maxDepth: 3
-                });
+            $('.nestable-list').nestable({
+                maxDepth: 3
             });
         }
     }
