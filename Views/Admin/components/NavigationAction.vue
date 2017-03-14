@@ -206,7 +206,6 @@
                     website: {id: ''},
                     items: []
                 },
-                items: [],
                 publication_types: [],
                 nav_url: null,
                 nav_title: null,
@@ -253,10 +252,7 @@
                 this.navigation.items.splice(index, 1);
             },
             updateOrCreate(){
-                /*let navs = $('.nestable-list').nestable('serialize');*/
-                this.navigation.items = this.items;
-                console.log(this.navigation.items);
-               /* this.update({
+                this.update({
                     api: navigation_api.update_or_create + this.website_id + '/' + this.navigation_id,
                     value: {
                         name: this.navigation.name,
@@ -273,7 +269,7 @@
                         }
                         this.navigation_id = (this.navigation.id !== undefined) ? this.navigation.id : 'create';
                     }
-                })*/
+                })
             },
             deleteNavigation(){
                 if (this.navigation.id !== undefined) {
@@ -332,7 +328,6 @@
                         this.read({api: navigation_api.read + this.navigation_id + '/' + this.website_id}).then((response) => {
                             if (response.data.resource !== undefined) {
                                 this.navigation = response.data.resource;
-                                this.items = this.navigation.items;
                             }
                         })
                     }
@@ -349,12 +344,6 @@
                     o.navigation.items = o.reorder(navs, o.navigation.items, []);
                 }
             });
-
-
-          /*  $('.nestable-list').on('change' , () => {
-                let navs = $('.nestable-list').nestable('serialize');
-                o.navigation.items = o.reorder(navs, o.navigation.items, []);
-            })*/
         }
     }
 </script>
