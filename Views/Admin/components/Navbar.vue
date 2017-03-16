@@ -70,7 +70,7 @@
                 <div :id="'item-accordion-' + item.id" class="collapse nav-bar"
                      aria-expanded="false">
                     <div class="card-body">
-                        <select2 v-if="item.type != 'custom'" :launch="true"
+                        <select2 v-if="item.type != 'custom'"
                                  :val="[item.type_id]" :multiple="false"
                                  @updateValue="updateUrl"
                                  :contents="getNavigationTypes(item.type)"

@@ -101,14 +101,13 @@
                             </div>
                             <div :id="'menu-accordion-' + index" class="collapse" aria-expanded="false">
                                 <div class="card-body">
-                                    <select2 :launch="true" :multiple="false" @updateValue="updateItem"
+                                    <select2 :multiple="false" @updateValue="updateItem"
                                              :contents="publication_type.values" :val_index="false"
                                              :id="'item-select-' + index"
                                              index="name"
                                              :label="publication_type.name"></select2>
-                                    <select2
-                                            v-if="publication_type.id != 'page' && routes.length > 0 && auth.status.level < 4"
-                                            :launch="true" :multiple="false"
+                                    <select2 v-if="publication_type.id != 'page' && routes.length > 0 && auth.status.level < 4"
+                                            :multiple="false"
                                             @updateValue="updateRoute"
                                             :val="('route_id' in publication_type) ? [publication_type.route_id] : []"
                                             :contents="routes" :id="'route-select-' + index" index="url"
