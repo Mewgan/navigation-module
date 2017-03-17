@@ -160,6 +160,7 @@ class AdminNavigationController extends AdminController
             $item = (isset($value['id']) && substr($value['id'], 0, 6) != "create" && $nav_website == $navigation->getWebsite())
                 ? NavigationItem::findOneById($value['id'])
                 : new NavigationItem();
+            if(is_null($item)) return ['status' => 'error', 'message' => 'Impossible de trouver la rubrique : ' . $value['title']];
             $response = $this->updateItem($item_request, $navigation, $item, $nav_website, $value, $parent);
             if (is_array($response)) return $response;
         }
@@ -238,7 +239,7 @@ class AdminNavigationController extends AdminController
             $data = $website->getData();
 
             if (!$this->isWebsiteOwner($auth, $website->getId()))
-                return ['status' => 'error', 'message' => 'Vous n\'avez pas les permission pour supprimer ces catégories'];
+                return ['status' => 'error', 'message' => 'Vous n\'avez pas les permissions pour supprimer ces catégories'];
 
             $navigations = Navigation::repo()->findById($request->get('ids'));
             $ids = [];
@@ -271,13 +272,15 @@ class AdminNavigationController extends AdminController
         if ($request->method() == 'DELETE' && $request->exists('ids')) {
 
             if (!$this->isWebsiteOwner($auth, $website))
-                return ['status' => 'error', 'message' => 'Vous n\'avez pas les permission pour supprimer ces catégories'];
+                return ['status' => 'error', 'message' => 'Vous n\'avez pas les permissions pour supprimer ces catégories'];
 
             $items = Navigation::repo()->findItemsById($request->get('ids'));
             $ids = [];
 
-            foreach ($items as $item)
-                if ($item['navigation']['website']['id'] == $website) $ids[] = $item['id'];
+            foreach ($items as $item) {
+                if ($item['navigation']['website']['id'] == $website)
+                    $ids[] = $item['id'];
+            }
 
             return (NavigationItem::destroy($ids))
                 ? ['status' => 'success', 'message' => 'Les champs ont bien été supprimés']

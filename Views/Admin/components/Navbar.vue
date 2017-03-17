@@ -182,16 +182,20 @@
                 this.item.children.splice(index, 1);
             },
             deleteItem(){
-                if (this.item.id === parseInt(this.item.id, 10) && this.navigation_website == this.website_id) {
-                    this.destroy({
-                        api: navigation_api.destroy_item + this.$route.params.website_id,
-                        ids: [this.item.id]
-                    });
-                }else if(this.item.id.substring(0,6) == 'create' && this.item.children.length > 0){
-                    this.destroy({
-                        api: navigation_api.destroy_item + this.$route.params.website_id,
-                        ids: this.getIds(this.item.children)
-                    });
+                if(this.navigation_website == this.website_id){
+                    let ids = [];
+                    if (this.item.id === parseInt(this.item.id, 10)) {
+                        ids.push(this.item.id);
+                    }
+                    if(this.item.children.length > 0) {
+                        ids = ids.concat(this.getIds(this.item.children));
+                    }
+                    if (ids.length > 0) {
+                        this.destroy({
+                            api: navigation_api.destroy_item + this.$route.params.website_id,
+                            ids: ids
+                        });
+                    }
                 }
                 this.$emit('deleteItem', this.item.id);
             },
@@ -201,7 +205,7 @@
                     if (item.id === parseInt(item.id, 10) && this.navigation_website == this.website_id) {
                         new_items.push(item.id);
                     }
-                    if(item.children.length > 0){
+                    if (item.children.length > 0) {
                         new_items = new_items.concat(this.getIds(item.children));
                     }
                 })
