@@ -2,14 +2,14 @@
 
 namespace Jet\Modules\Navigation\Models;
 
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use Jet\Models\AppRepository;
 
 /**
  * Class NavigationRepository
  * @package Jet\Modules\Navigation\Models
  */
-class NavigationRepository extends EntityRepository
+class NavigationRepository extends AppRepository
 {
 
     /**
@@ -188,10 +188,11 @@ class NavigationRepository extends EntityRepository
             $query->andWhere($query->expr()->in('w.id', ':websites'))
                 ->setParameter('websites', $params['websites']);
         }
-        if (isset($params['options']) && isset($params['options']['parent_exclude']) && isset($params['options']['parent_exclude']['navigations']) && !empty($params['options']['parent_exclude']['navigations'])) {
-            $query->andWhere($query->expr()->notIn('n.id', ':exclude_ids'))
-                ->setParameter('exclude_ids', $params['options']['parent_exclude']['navigations']);
+
+        if (isset($params['options'])){
+            $query = $this->excludeData($query, $params['options'], 'navigations');
         }
+        
         return $query;
     }
 
