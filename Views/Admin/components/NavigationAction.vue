@@ -18,6 +18,7 @@
     .navigation-action .cursor {
         cursor: pointer;
     }
+
 </style>
 
 <template>
@@ -33,9 +34,9 @@
                 <li class="active">{{ navigation.name }}</li>
             </ol>
             <a @click="updateOrCreate" class="btn ink-reaction btn-raised btn-lg btn-primary pull-right">
-                <i class="fa fa-floppy-o" aria-hidden="true"></i> Sauvegarder
+                <i class="fa fa-floppy-o" aria-hidden="true"></i> Enregistrer
             </a>
-            <a data-toggle="modal"
+            <a v-if="auth.status.level < 4"  data-toggle="modal"
                data-target="#deleteNavigationModal" class="btn ink-reaction btn-raised btn-lg btn-danger pull-right">
                 <i class="fa fa-trash" aria-hidden="true"></i> Supprimer
             </a>
@@ -66,7 +67,6 @@
                         <!-- BEGIN SEARCH RESULTS -->
                         <div class="card-body style-primary">
                             <h2>Structure du menu</h2>
-
                             <p>Glissez chaque élément pour les placer dans l’ordre que vous préférez. Cliquez sur la
                                 flèche à droite de l’élément pour afficher d’autres options de configuration.</p>
                             <div class="panel-group" id="menu-accordion-list">
@@ -81,6 +81,11 @@
                                     </ol>
                                 </div>
                             </div><!--end .dd.nestable-list -->
+
+                            <a @click="updateOrCreate" class="btn ink-reaction btn-raised btn-lg btn-default pull-right">
+                                <i class="fa fa-floppy-o" aria-hidden="true"></i> Enregistrer
+                            </a>
+
                         </div>
                     </div>
                 </div>
@@ -271,7 +276,7 @@
                 })
             },
             deleteNavigation(){
-                if (this.navigation.id !== undefined) {
+                if (this.navigation.id !== undefined && this.auth.status.level < 4) {
                     this.destroy({
                         api: navigation_api.destroy + this.website_id,
                         ids: [this.navigation.id]

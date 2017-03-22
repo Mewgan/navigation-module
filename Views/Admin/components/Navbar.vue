@@ -187,7 +187,7 @@
                     if (this.item.id === parseInt(this.item.id, 10)) {
                         ids.push(this.item.id);
                     }
-                    if(this.item.children.length > 0) {
+                    if(this.item.children instanceof Array && this.item.children.length > 0) {
                         ids = ids.concat(this.getIds(this.item.children));
                     }
                     if (ids.length > 0) {
