@@ -205,7 +205,7 @@
                     if (item.id === parseInt(item.id, 10) && this.navigation_website == this.website_id) {
                         new_items.push(item.id);
                     }
-                    if (item.children.length > 0) {
+                    if (item.children instanceof Array && item.children.length > 0) {
                         new_items = new_items.concat(this.getIds(item.children));
                     }
                 })
