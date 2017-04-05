@@ -11,7 +11,17 @@ return [
                 'prefix' => 'admin',
             ],
         ],
+        'fixtures' => [
+            'src/Modules/Navigation/Fixtures/'
+        ],
         'settings' => [
+            'custom_field_type' => [
+                'content' => [
+                    'values' => [
+                        ['navigation', 'Navigation' , 'Navigation@navigationCustomField' , 'Navigation@navigationRenderCustomField']
+                    ]
+                ]
+            ],
             'custom_field_callback' => [
                 'navigation' => '\\Jet\\Modules\\Navigation\\Controllers\\FrontNavigationController@renderField'
             ],
