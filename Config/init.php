@@ -34,6 +34,16 @@ return [
                     'get_url' => '\\Jet\\AdminBlock\\Controllers\\PageController@getStaticPageRoute'
                 ],
             ],
+        ],
+        'events' => [
+            'updatePage' => [
+                [
+                    'type' => 'async', // linear or async
+                    'method' => 'POST',
+                    'route' => 'api.navigation.update_url',
+                    //'callback' => '\\Jet\\Events\\NavigationListener@updateNavigationUrl'
+                ]
+            ]
         ]
     ]
 ];
