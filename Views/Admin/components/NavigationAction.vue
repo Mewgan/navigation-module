@@ -233,7 +233,11 @@
             },
             addNavBar(type){
                 let type_id = null;
-                if (this.nav_route == null) this.nav_route = (this.publication_types[type] !== undefined && this.publication_types[type]['route_id'] !== undefined) ? this.publication_types[type]['route_id'] : null;
+                if (this.nav_route == null) {
+                    this.nav_route = (this.publication_types[type] !== undefined && this.publication_types[type]['route_id'] !== undefined)
+                            ? this.publication_types[type]['route_id']
+                            : null;
+                }
                 let url = this.nav_url;
                 if (this.nav_title != null && (type == 'custom' || type == 'page' || this.nav_route != null) && this.nav_url != null) {
                     (type != 'custom') ? type_id = this.nav_url : this.nav_route = null;
