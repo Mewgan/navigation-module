@@ -38,7 +38,7 @@
                     <label :for="'content-class-' + line">Class</label>
                 </div>
                 <h5 class="module-title">Choix du template :</h5>
-                <template-editor :id="line" :templates="templates" :template="content.template"
+                <template-editor @updateTemplate="updateTemplate" :id="line" :templates="templates" :template="content.template"
                                  label="Template du contenu"></template-editor>
             </div>
             <div>
@@ -127,6 +127,9 @@
                 } else
                     this.setResponse({status: 'error', message: 'Veuillez choisir le template et/ou le menu à afficher'});
             },
+            updateTemplate(template){
+                if (this.content.template !== undefined) this.content.template = template;
+            }
         },
         created(){
             this.read({api: template_api.get_website_content_layouts + this.website}).then((response) => {
