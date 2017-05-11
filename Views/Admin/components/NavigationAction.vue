@@ -31,11 +31,8 @@
                         Menus
                     </router-link>
                 </li>
-                <li class="active">{{ navigation.name }}</li>
+                <li class="active">{{ navigation.name }}  <a data-toggle="modal" data-target="#infoNavigationModal"><i class="fa fa-info-circle"></i></a></li>
             </ol>
-            <a @click="updateOrCreate" class="btn ink-reaction btn-raised btn-lg btn-primary pull-right">
-                <i class="fa fa-floppy-o" aria-hidden="true"></i> Enregistrer
-            </a>
             <a v-if="auth.status.level < 4"  data-toggle="modal"
                data-target="#deleteNavigationModal" class="btn ink-reaction btn-raised btn-lg btn-danger pull-right">
                 <i class="fa fa-trash" aria-hidden="true"></i> Supprimer
@@ -43,14 +40,6 @@
         </div>
 
         <div class="section-body">
-
-            <div class="alert alert-info" role="alert">
-                <strong><i class="fa fa-info-circle"></i> Comment ajouter une rubrique à mon menu ?</strong>
-                <p><strong>1.</strong> Choisir le type de lien que vous souhaitez ajouter au menu (page, article,
-                    catégorie ...). Pensez à créer d'abord l'élément au préalable</p>
-                <p><strong>2.</strong> Ensuite choisir ou saisir votre lien</p>
-                <p><strong>3.</strong> Et enfin ajouter votre lien au menu en cliquant sur le bouton "Ajouter"</p>
-            </div>
 
             <form class="form">
 
@@ -91,7 +80,7 @@
                 </div>
 
                 <div class="col-sm-12 col-md-5 col-lg-4">
-                    <h2 class="text-primary">Liens</h2>
+                    <h2 class="text-primary">Ajouter une rubrique</h2>
 
                     <div class="panel-group" id="menu-item-accordion">
 
@@ -118,7 +107,7 @@
                                             :contents="routes" :id="'route-select-' + index" index="url"
                                             label="Route"></select2>
                                     <a @click="addNavBar(publication_type.id)"
-                                       class="btn ink-reaction btn-raised btn-lg btn-info pull-right">
+                                       class="btn ink-reaction btn-raised btn-lg btn-primary pull-right">
                                         Ajouter au menu
                                     </a>
                                 </div>
@@ -146,7 +135,7 @@
                                         <label for="custom-link-label">Texte du lien</label>
                                     </div>
                                     <a @click="addNavBar('custom')"
-                                       class="btn ink-reaction btn-raised btn-lg btn-info pull-right">
+                                       class="btn ink-reaction btn-raised btn-lg btn-primary pull-right">
                                         Ajouter au menu
                                     </a>
                                 </div>
@@ -179,11 +168,34 @@
             </div><!-- /.modal-dialog -->
         </div>
 
+        <!-- Modal Structure -->
+        <div class="modal fade" id="infoNavigationModal" tabindex="-1" role="dialog"
+             aria-labelledby="simpleModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="infoNavigationModalLabel">Information</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-info" role="alert">
+                            <strong><i class="fa fa-info-circle"></i> Comment ajouter une rubrique à mon menu ?</strong>
+                            <p><strong>1.</strong> Choisir le type de rubrique que vous souhaitez ajouter au menu (page, article,
+                                catégorie ...). Pensez à créer d'abord l'élément au préalable</p>
+                            <p><strong>2.</strong> Ensuite choisir votre rubrique</p>
+                            <p><strong>3.</strong> Et enfin ajouter votre rubrique au menu en cliquant sur le bouton "Ajouter"</p>
+                        </div>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+
     </section>
 
 </template>
 
 <script type="text/babel">
+
     import '@admin/libs/nestable/nestable.css'
     import '@admin/libs/nestable/jquery.nestable'
 

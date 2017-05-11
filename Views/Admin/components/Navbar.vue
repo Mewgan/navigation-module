@@ -58,12 +58,12 @@
                                    class="form-control"></header>
                     <div class="tools">
                         <em v-show="auth.status.level < 4">{{item.type}} </em>
-                        <a class="btn btn-default" data-toggle="collapse"
+                        <a v-show="auth.status.level < 4" class="btn btn-default" data-toggle="collapse"
                            :data-parent="accordion_parent"
                            :data-target="'#item-accordion-' + item.id"
                            aria-expanded="false"><i
                                 class="fa fa-pencil"></i></a>
-                        <a data-toggle="modal" :data-target="'#deleteNavBarModal' + item.id" class="btn delete-item btn-danger"><i
+                        <a data-toggle="modal" title="Supprimer la rubrique" :data-target="'#deleteNavBarModal' + item.id" class="btn delete-item btn-default"><i
                                 class="fa fa-trash"></i></a>
                     </div>
                 </div>
