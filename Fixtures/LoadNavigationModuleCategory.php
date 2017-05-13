@@ -16,7 +16,6 @@ class LoadNavigationModuleCategory extends AbstractFixture
         'slug' => 'navigation',
         'description' => 'Module pour le menu',
         'icon' => 'fa fa-bars',
-        'nav' => true,
         'author' => 'S.Sumugan',
         'version' => '0.1',
         'update_available' => false,

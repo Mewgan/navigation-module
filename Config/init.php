@@ -3,6 +3,12 @@
 return [
 
     'app' => [
+        'Navigation' => [
+            'order' => 0,
+            'hook' => [
+                'left_sidebar' => true
+            ]
+        ],
         'blocks' => [
             'NavigationModule' => [
                 'path' => 'src/Modules/Navigation/',
