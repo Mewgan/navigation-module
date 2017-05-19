@@ -7,6 +7,12 @@ return [
             'order' => 0,
             'hook' => [
                 'left_sidebar' => true
+            ],
+            'routes' => [
+                [
+                    'title' => 'Menu',
+                    'name'=> 'module:navigation',
+                ]
             ]
         ],
         'blocks' => [
