@@ -127,14 +127,13 @@
                         </div>
                         <div class="modal-body">
                             <div class="alert alert-info" role="alert">
-                                <p><strong><i class="fa fa-info-circle"></i> Vous vous trouvez sur la page de gestion des menus</strong></p>
-                                <p>Il vous est possible de créer plusieurs menus pour les ajouter à différent endroit de votre site</p>
+                                <p><strong><i class="fa fa-info-circle"></i> Vous êtes sur la page de gestion des menus</strong></p>
+                                <p>Il est possible de créer plusieurs menus pour les ajouter à différent endroit de votre site.</p>
                             </div>
                         </div>
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->
             </div>
-
 
         </div><!--end .section-body -->
     </section>

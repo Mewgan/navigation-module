@@ -56,8 +56,7 @@
                         <!-- BEGIN SEARCH RESULTS -->
                         <div class="card-body style-primary">
                             <h2>Structure du menu</h2>
-                            <p>Glissez chaque élément pour les placer dans l’ordre que vous préférez. Cliquez sur la
-                                flèche à droite de l’élément pour afficher d’autres options de configuration.</p>
+                            <p>Glissez chaque élément pour les placer dans l’ordre que vous préférez.</p>
                             <div class="panel-group" id="menu-accordion-list">
                                 <div class="dd nestable-list">
                                     <ol class="dd-list nav-list">
@@ -80,7 +79,7 @@
                 </div>
 
                 <div class="col-sm-12 col-md-5 col-lg-4">
-                    <h2 class="text-primary">Ajouter une rubrique</h2>
+                    <h2 class="text-primary">Ajouter une rubrique au menu</h2>
 
                     <div class="panel-group" id="menu-item-accordion">
 
