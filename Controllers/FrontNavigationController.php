@@ -40,6 +40,7 @@ class FrontNavigationController extends MainController
     public function renderField(Website $website, $value)
     {
         $navigation_types = $this->app->data['app']['settings']['navigation'];
+        if(substr($value, 0, 4) === 'http') return $value;
         $values = explode('@', $value);
         $url = null;
         if (isset($values[1]) && isset($navigation_types[$values[0]])) {

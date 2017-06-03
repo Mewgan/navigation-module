@@ -14,7 +14,7 @@ trait LoadNavigationFixture
 {
 
     protected $navigation_type_callback = [
-            'page' => 'getPageTypeId'
+        'page' => 'getPageTypeId'
     ];
 
     /**
@@ -124,6 +124,7 @@ trait LoadNavigationFixture
      * @return mixed
      */
     protected function getPageTypeId($title, $website){
+        /** @var Page $page */
         $page = $this->hasReference($title) ? $this->getReference($title) : Page::findOneBy(['title' => $title, 'website' => $website]);
         return $page->getId();
     }
@@ -141,6 +142,45 @@ trait LoadNavigationFixture
             $data['data']['navigation'] = $nav->getId();
         }
         return $data;
+    }
+
+
+    /**
+     * @param $data
+     * @return array
+     */
+    protected function getCustomFieldNavigation($data)
+    {
+        $new_content = $data;
+        $website = (isset($new_content['website']) && $this->hasReference($new_content['website'])) ? $this->getReference($new_content['website']) : null;
+        foreach ($data['content'] as $key => $item) {
+            if (is_array($item)) {
+                $content = [];
+                $this->recursiveSetNav($item, $content, $website);
+                $new_content['content'][$key] = $content;
+            } else {
+                $nav = explode('@', $item);
+                $new_content['content'][$key] = $nav[0] . '@' . $this->getTypeId($nav[0], $nav[1], $website);
+            }
+        }
+        return $new_content;
+    }
+
+    /**
+     * @param $items
+     * @param array $content
+     * @param $website
+     */
+    private function recursiveSetNav($items, &$content = [], $website){
+        foreach ($items as $index => $nav) {
+            if(is_array($nav)){
+                $content[$index] = [];
+                $this->recursiveSetPost($nav, $content[$index], $website);
+            } else {
+                $nav = explode('@', $nav);
+                $content[] = $nav[0] . '@' . $this->getTypeId($nav[0], $nav[1], $website);
+            }
+        }
     }
 
 }
