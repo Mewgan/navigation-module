@@ -158,9 +158,11 @@ trait LoadNavigationFixture
                 $content = [];
                 $this->recursiveSetNav($item, $content, $website);
                 $new_content['content'][$key] = $content;
-            } else {
+            } elseif(!empty($item)) {
                 $nav = explode('@', $item);
                 $new_content['content'][$key] = $nav[0] . '@' . $this->getTypeId($nav[0], $nav[1], $website);
+            }else{
+                $new_content['content'][$key] = $item;
             }
         }
         return $new_content;
@@ -176,9 +178,11 @@ trait LoadNavigationFixture
             if(is_array($nav)){
                 $content[$index] = [];
                 $this->recursiveSetPost($nav, $content[$index], $website);
-            } else {
+            } elseif(!empty($nav)) {
                 $nav = explode('@', $nav);
                 $content[] = $nav[0] . '@' . $this->getTypeId($nav[0], $nav[1], $website);
+            }else{
+                $content[] = $nav;
             }
         }
     }
