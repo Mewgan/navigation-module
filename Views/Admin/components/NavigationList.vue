@@ -11,20 +11,20 @@
 </style>
 
 <template>
-    <section class="list-navigation">
+    <section class="list-navigation style-default-light">
 
         <div class="section-header">
             <ol class="breadcrumb">
                 <li class="active">Menu <a data-toggle="modal" data-target="#infoNavigationListModal"><i class="fa fa-info-circle"></i></a></li>
             </ol>
-            <router-link v-if="auth.status.level < 4" class="btn ink-reaction btn-raised btn-lg btn-primary pull-right" :to="{name: 'module:navigation:action', params: {website_id: website_id, navigation_id: 'create'}}">
+            <router-link v-if="auth.status.level < 4" class="btn btn-default-bright pull-right" :to="{name: 'module:navigation:action', params: {website_id: website_id, navigation_id: 'create'}}">
                 <i class="fa fa-plus"></i> Ajouter un menu
             </router-link>
             <div v-if="auth.status.level < 4" class="btn-group pull-right">
-                <button type="button" class="btn btn-lg ink-reaction" data-toggle="dropdown">Action</button>
-                <button type="button" class="btn btn-lg ink-reaction btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-caret-down"></i></button>
+                <button type="button" class="btn btn-default-bright" data-toggle="dropdown">Action</button>
+                <button type="button" class="btn ink-reaction btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-caret-down"></i></button>
                 <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                    <li><a @click="deleteNavigation"><i class="fa fa-fw fa-times text-danger"></i> Supprimer</a></li>
+                    <li><a @click="deleteNavigation"><i class="fa fa-fw fa-times"></i> Supprimer</a></li>
                 </ul>
             </div>
         </div>
@@ -79,12 +79,12 @@
                                             <td>
                                                 <router-link
                                                         :to="{name: 'module:navigation:action', params: {website_id: website_id, navigation_id: navigation.id}}"
-                                                        class="btn ink-reaction btn-default">
+                                                        class="btn ink-reaction btn-default-bright">
                                                     <i class="fa fa-pencil"></i> Modifier
                                                 </router-link>
                                                 <a v-if="auth.status.level < 4" @click="selectNavigation(navigation.id)" data-toggle="modal"
                                                    data-target="#deleteNavigationModal"
-                                                   class="btn ink-reaction btn-default"><i
+                                                   class="btn ink-reaction btn-default-bright"><i
                                                         class="fa fa-trash"></i> Supprimer</a>
                                             </td>
                                         </tr>

@@ -22,7 +22,7 @@
 </style>
 
 <template>
-    <section class="navigation-action">
+    <section class="navigation-action style-default-light auto">
 
         <div class="section-header">
             <ol class="breadcrumb">
@@ -34,7 +34,7 @@
                 <li class="active">{{ navigation.name }}  <a data-toggle="modal" data-target="#infoNavigationModal"><i class="fa fa-info-circle"></i></a></li>
             </ol>
             <a v-if="auth.status.level < 4"  data-toggle="modal"
-               data-target="#deleteNavigationModal" class="btn ink-reaction btn-raised btn-lg btn-danger pull-right">
+               data-target="#deleteNavigationModal" class="btn btn-default-bright pull-right">
                 <i class="fa fa-trash" aria-hidden="true"></i> Supprimer
             </a>
         </div>
@@ -70,7 +70,7 @@
                                 </div>
                             </div><!--end .dd.nestable-list -->
 
-                            <a @click="updateOrCreate" class="btn ink-reaction btn-raised btn-lg btn-default pull-right">
+                            <a @click="updateOrCreate" class="btn btn-default-bright pull-right">
                                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Enregistrer
                             </a>
 
@@ -106,7 +106,7 @@
                                             :contents="routes" :id="'route-select-' + index" index="url"
                                             label="Route"></select2>
                                     <a @click="addNavBar(publication_type.id)"
-                                       class="btn ink-reaction btn-raised btn-lg btn-primary pull-right">
+                                       class="btn btn-default pull-right">
                                         Ajouter au menu
                                     </a>
                                 </div>
@@ -134,7 +134,7 @@
                                         <label for="custom-link-label">Texte du lien</label>
                                     </div>
                                     <a @click="addNavBar('custom')"
-                                       class="btn ink-reaction btn-raised btn-lg btn-primary pull-right">
+                                       class="btn btn-default pull-right">
                                         Ajouter au menu
                                     </a>
                                 </div>
