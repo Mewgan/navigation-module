@@ -18,6 +18,9 @@ export var routes = [
 export var content_routes = {
     navigation: (resolve) => {
         require(['./components/Module/NavigationModule.vue'], resolve)
+    },
+    userNavigation: (resolve) => {
+        require(['./components/Module/UserNavigationModule.vue'], resolve)
     }
 };
 
